@@ -1,5 +1,6 @@
 package egreso.egreso.builder;
 import Importe.Importe;
+import direccion_moneda.ConversorDeMoneda;
 import direccion_moneda.mercadolibre_api.molde.Moneda;
 import egreso.ItemEgreso;
 import egreso.MedioDePago;
@@ -8,6 +9,7 @@ import egreso.proveedor.Proveedor;
 import egreso.documento.Documento;
 import organizacion.Organizacion;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -49,12 +51,15 @@ public class EgresoBuilder {
         return this;
     }
 
-    public EgresoBuilder agregarItemsEgreso(ItemEgreso ...itemsEgreso) {
+    public EgresoBuilder agregarItemsEgreso(ItemEgreso ...itemsEgreso) throws IOException {
         List<ItemEgreso> itemsList = new ArrayList<>();
+        Moneda moneda = this.egreso.getOrganizacion().getTipoDeOrganizacion().getDireccionPostal().getUbicacion().getMoneda();
         Collections.addAll(itemsList,itemsEgreso);
+        for(ItemEgreso i:itemsList){
+            ConversorDeMoneda.instancia().convertir(i.getMontoTtotal(),moneda);
+        }
         this.egreso.setItemEgresos(itemsList);
         BigDecimal valorTotal = itemsList.stream().map(i->i.getMontoTtotal().getValor()).reduce(BigDecimal.ZERO,BigDecimal::add);
-        Moneda moneda = this.egreso.getProveedor().getDireccionPostal().getUbicacion().getMoneda();
         this.egreso.setMontoTotal(new Importe(valorTotal.toString(),moneda));
         return this;
     }

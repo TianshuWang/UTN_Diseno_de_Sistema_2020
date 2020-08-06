@@ -1,10 +1,12 @@
 package ingreso;
 
 import Importe.Importe;
+import direccion_moneda.ConversorDeMoneda;
 import direccion_moneda.mercadolibre_api.molde.Moneda;
 import generadorIdentificador.GeneradorIdentificador;
 import organizacion.Organizacion;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -15,19 +17,22 @@ public class Ingreso {
     private String identificador;
     private String descripcion;
     private List<ItemIngreso> itemIngresoList;
-    private Importe valorTotal;
+    private Importe montoTotal;
     private Organizacion organizacion;
     private LocalDate fechaDeOperacion;
 
-    public Ingreso(Organizacion organizacion, String descripcion, LocalDate fechaDeOperacion, ItemIngreso ...itemIngreso){
+    public Ingreso(Organizacion organizacion, String descripcion, LocalDate fechaDeOperacion, ItemIngreso ...itemIngreso) throws IOException {
+        this.identificador = GeneradorIdentificador.generarIdentificadorIngreso("%05d");
         this.organizacion = organizacion;
         this.fechaDeOperacion = fechaDeOperacion;
         this.descripcion = descripcion;
         this.itemIngresoList = new ArrayList<>();
         Collections.addAll(itemIngresoList,itemIngreso);
-        Moneda moneda = itemIngreso[0].getMontoTtotal().getMoneda();
-        this.valorTotal = new Importe(calcularValorTotal().toString(),moneda);
-        this.identificador = GeneradorIdentificador.generarIdentificadorIngreso("%05d");
+        Moneda moneda = this.organizacion.getTipoDeOrganizacion().getDireccionPostal().getUbicacion().getMoneda();
+        for(ItemIngreso i:this.itemIngresoList){
+            ConversorDeMoneda.instancia().convertir(i.getMontoTtotal(),moneda);
+        }
+        this.montoTotal = new Importe(calcularValorTotal().toString(),moneda);
     }
 
     private BigDecimal calcularValorTotal(){
@@ -41,5 +46,21 @@ public class Ingreso {
 
     public String getIdentificador() {
         return identificador;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public List<ItemIngreso> getItemIngresoList() {
+        return itemIngresoList;
+    }
+
+    public Importe getMontoTotal() {
+        return montoTotal;
+    }
+
+    public LocalDate getFechaDeOperacion() {
+        return fechaDeOperacion;
     }
 }

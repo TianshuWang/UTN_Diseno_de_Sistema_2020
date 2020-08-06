@@ -20,6 +20,7 @@ import egreso.proveedor.VerificadorDeProveedor;
 import exceptions.*;
 import ingreso.IngresoFactory;
 import ingreso.Ingreso;
+import ingreso.ItemIngreso;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -180,7 +181,43 @@ public class Tester {
 
         ConversorDeMoneda.instancia().convertir(importe,ARS);
         Assert.assertEquals("ARS",importe.getMoneda().id);
-        Assert.assertEquals("723.20",importe.getValor().toString());
+        Assert.assertEquals("725.70",importe.getValor().toString());
+    }
+
+    @Test
+    public void conversionDeMonedaDeEgreso() throws IOException, ExcepcionMercadoLibreApi, PassawordException, UserException, PasswordExpired, ExcepcionDeCreacionDeEgreso, DocumentException {
+        ProductoServicio agua = new ProductoServicio("Agua", "liquido con H2O", "Producto Simple");
+        Ubicacion newYork = new Ubicacion("New York","New York","United States of America");
+        DireccionPostal direccionProveedorUS = new DireccionPostal("XXXXX",999,5,101,newYork);
+        Proveedor proveedorUS = new Proveedor("ProveedorUS","99999999",direccionProveedorUS,agua);
+
+        //configurar un item de egreso con un proveedor en USD
+        ItemEgreso itemEgreso = new ItemEgreso(agua,"10",10);
+        Assert.assertEquals("USD",itemEgreso.getMontoTtotal().getMoneda().id);
+        Assert.assertEquals("100",itemEgreso.getMontoTtotal().getValor().toString());
+
+        Login.crearUsuario("12345@gmail.com","iuuj7@Ythn8",soyUnaEmpresa,new Administrador());
+        Usuario user = Login.ingresarUsuario("12345@gmail.com","iuuj7@Ythn8");
+
+        //cargar un egreso con el item previo
+        Egreso egreso = user.cargarEgreso(proveedorUS,credito, LocalDate.of(2020,7,31),null, itemEgreso);
+        Assert.assertEquals("ARS",egreso.getMontoTotal().getMoneda().id);
+        Assert.assertEquals("7257.00",egreso.getMontoTotal().getValor().toString());
+    }
+
+    @Test
+    public void conversionDeMonedaDeIngreso() throws IOException, ExcepcionMercadoLibreApi {
+        Ubicacion newYork = new Ubicacion("New York","New York","United States of America");
+        Moneda USD = newYork.getMoneda();
+
+        //configurar un item de ingreso con USD
+        ItemIngreso itemIngreso = new ItemIngreso("agua","10",USD,10);
+        Assert.assertEquals("USD",itemIngreso.getMontoTtotal().getMoneda().id);
+        Assert.assertEquals("100",itemIngreso.getMontoTtotal().getValor().toString());
+
+        Ingreso ingreso = new Ingreso(soyUnaEmpresa,"Venta",LocalDate.of(2020,7,31),itemIngreso);
+        Assert.assertEquals("ARS",ingreso.getMontoTotal().getMoneda().id);
+        Assert.assertEquals("7257.00",ingreso.getMontoTotal().getValor().toString());
     }
 
     @Test
@@ -202,7 +239,7 @@ public class Tester {
 
         Presupuesto presupuesto = PresupuestoFactory.crearPresupuesto(egreso,itemPresupuesto);
         Assert.assertEquals("ARS",itemPresupuesto.getMontoTotal().getMoneda().id);
-        Assert.assertEquals("72.320",itemPresupuesto.getMontoTotal().getValor().toString());
+        Assert.assertEquals("72.570",itemPresupuesto.getMontoTotal().getValor().toString());
     }
 
 }
