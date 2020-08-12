@@ -4,7 +4,6 @@ import direccion_moneda.ConversorDeMoneda;
 import direccion_moneda.Ubicacion;
 import direccion_moneda.mercadolibre_api.ExcepcionMercadoLibreApi;
 import direccion_moneda.mercadolibre_api.molde.Moneda;
-import direccion_moneda.mercadolibre_api.services.ServicioMercadolibre;
 import direccion_moneda.DireccionPostal;
 import egreso.ItemEgreso;
 import egreso.MedioDePago;

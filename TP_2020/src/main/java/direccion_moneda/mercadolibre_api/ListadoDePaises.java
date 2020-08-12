@@ -12,11 +12,12 @@ public class ListadoDePaises {
     private static ListadoDePaises instancia = null;
     private List<Pais> paises;
 
-    private ListadoDePaises(){
+    private ListadoDePaises() throws IOException {
         this.paises = new ArrayList<>();
+        this.paises = Arrays.asList(ServicioMercadolibre.instancia().paises());
     }
 
-    public static ListadoDePaises getInstancia(){
+    public static ListadoDePaises getInstancia() throws IOException {
         if(instancia == null){
             instancia = new ListadoDePaises();
         }
@@ -24,7 +25,6 @@ public class ListadoDePaises {
     }
 
     public Pais paisDeNombre(String nombre) throws IOException, ExcepcionMercadoLibreApi {
-        this.paises = Arrays.asList(ServicioMercadolibre.instancia().paises());
         Pais aux = this.paises.stream().filter(p -> p.name.equalsIgnoreCase(nombre)).findAny().orElse(null);
         if(aux == null){
             throw new ExcepcionMercadoLibreApi("No existe el pais");

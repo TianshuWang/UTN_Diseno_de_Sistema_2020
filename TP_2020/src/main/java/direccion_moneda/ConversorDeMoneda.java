@@ -22,7 +22,7 @@ public class ConversorDeMoneda {
         return instancia;
     }
 
-    private Ratio getRatio(Moneda m1, Moneda m2) throws IOException {
+    public Ratio getRatio(Moneda m1, Moneda m2) throws IOException {
         return ServicioMercadolibre.instancia().ratio(m1.id,m2.id);
     }
 
