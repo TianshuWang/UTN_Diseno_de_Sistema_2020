@@ -9,15 +9,15 @@ import java.net.URL;
 public class WorstValidator implements Validator {
     private boolean isNotTheWorstPassword;
 
-    public void validatePassword(String password) throws FileNotFoundException, PassawordException {
+    public void validatePassword(String password) throws FileNotFoundException, TransactionException {
         isNotTheWorstPassword = !isTheWorstPassword(password);
         if(isNotTheWorstPassword == false) {
             whatFailed(password);
         }
     }
 
-    private void whatFailed(String password) throws PassawordException {
-        throw new PassawordException("Password is in the worst password list");
+    private void whatFailed(String password) throws TransactionException {
+        throw new TransactionException(BusinessError.PASSWORD_EXCEPTION,"Contraseña Está En La Lista De Las Peores Contraseñas");
     }
 
     private boolean isTheWorstPassword(String password) throws FileNotFoundException {

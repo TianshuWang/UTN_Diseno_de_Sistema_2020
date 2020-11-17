@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html style="height: 100%;">
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+
+    <link rel="stylesheet" href="resources/css/estilo.css" type="text/css">
+
+    <title>Cargar Organización</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+        integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.6/handlebars.min.js"></script>
+
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js"
+        integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ"
+        crossorigin="anonymous"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js"
+        integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY"
+        crossorigin="anonymous"></script>
+
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.6/handlebars.min.js"></script>
+    <script type="text/javascript">
+        function isNumber(obj) {
+            return typeof obj === 'number' && !isNumber(obj)
+        }
+        $(document).ready(function () {
+            $("#pais").change(function () {
+                var id = $("#pais option:selected").val();
+                $.ajax({
+                    url: "/provincias/" + id,
+                    type: "post",
+
+                    success: function (p) {
+                        var prov = JSON.parse(p);
+                        var res = "";
+                        for (var i = 0; i < prov.length; i++) {
+                            res += ("<option name='provincia' value=" + prov[i].id + ">" + prov[i].name + "</option>");
+                        }
+
+                        $("#provincia").empty();
+                        $("#provincia").append(res);
+                    },
+                    error: function (xhr, status, errorThrown) {
+                        $("#alert-body").html(xhr.responseText);
+                        $("#alert").modal({ 'show': true });
+                    }
+                });
+            });
+        });
+
+        $(document).ready(function () {
+            $("#provincia").change(function () {
+                var id = $("#provincia option:selected").val();
+                $.ajax({
+                    url: "/ciudades/" + id,
+                    type: "post",
+
+                    success: function (c) {
+                        var ciud = JSON.parse(c);
+                        var res = "";
+                        for (var i = 0; i < ciud.length; i++) {
+                            res += ("<option name='provincia' value=" + ciud[i].id + ">" + ciud[i].name + "</option>");
+                        }
+
+                        $("#ciudad").empty();
+                        $("#ciudad").append(res);
+                    },
+                    error: function (xhr, status, errorThrown) {
+                        $("#alert-body").html(xhr.responseText);
+                        $("#alert").modal({ 'show': true });
+                    }
+                });
+            });
+        });
+
+        $(document).ready(function () {
+            $("#base").click(function () {
+                $("#razon-social").attr('disabled', true);
+                $("#cuit").attr('disabled', true);
+                $("#nroIGJ").attr('disabled', true);
+                $("#tipo").attr('disabled', true);
+                $("#org-juridica").attr('disabled', false);
+                $("#info-e").attr("style", "display:none;")
+                $("#info-o").attr("style", "display:none;")
+            });
+        });
+
+        $(document).ready(function () {
+            $("#juridica").click(function () {
+                $("#org-juridica").attr('disabled', true);
+                $("#razon-social").attr('disabled', false);
+                $("#cuit").attr('disabled', false);
+                $("#tipo").attr('disabled', false);
+                $("#nroIGJ").attr('disabled', false);
+                var tipo = $("#tipo option:selected").val();
+                if (tipo == 'osc') {
+                    $("#info-o").attr("style", "display:block;")
+                }
+                else {
+                    $("#info-e").attr("style", "display:block;")
+                }
+            });
+        });
+
+        $(document).ready(function () {
+            $("#organizacion_form").submit(function (event) {
+                event.preventDefault();
+                var tipo = $("input[name='tipo-org']:checked").val();
+                if (tipo == "juridica") {
+                    var cuit = $("#cuit").val();
+                    if (isNaN(cuit)) {
+                        $("#alert-body").html("CUIT debe que ser 11 digitos.");
+                        $("#alert").modal({ 'show': true });
+                        return false;
+                    }
+                    if (cuit.length != 11) {
+                        $("#alert-body").html("CUIT debe que ser 11 digitos.");
+                        $("#alert").modal({ 'show': true });
+                        return false;
+                    }
+                    var c = "";
+                    for (var i = 0; i < 2; i++) {
+                        c += cuit[i];
+                    }
+                    c += '-';
+                    for (var k = 2; k < 10; k++) {
+                        c += cuit[k];
+                    }
+                    c += '-';
+                    for (var j = 10; j < 11; j++) {
+                        c += cuit[i]
+                    }
+                    $("#cuit").val(c);
+                }
+
+                var $form = $(this);
+
+                $.ajax({
+                    url: $form.attr("action"),
+                    data: $form.serialize(),
+                    type: "POST",
+
+                    success: function (data) {
+                        $("#alert-body").html(data);
+                        $("#alert").modal({ 'show': true });
+                        $('#out').click(function () {
+                            location.reload(true);
+                        });
+                    },
+                    error: function (xhr, status, errorThrown) {
+                        $("#alert-body").html(xhr.responseText);
+                        $("#alert").modal({ 'show': true });
+                    }
+                });
+            });
+        });
+
+        $(document).ready(function () {
+            $("#menu").click(function () {
+                $(".sidenav").slideToggle("slow");
+            });
+        });
+
+        $(function () { $("[data-toggle='tooltip']").tooltip(); });
+
+        $(document).ready(function () {
+            $("#tipo").change(function () {
+                var tipo = $("#tipo option:selected").val();
+                if (tipo == "empresa") {
+                    $("#info-e").attr("style", "display:block;")
+                    $("#info-o").attr("style", "display:none;")
+                }
+                else {
+                    $("#info-o").attr("style", "display:block;")
+                    $("#info-e").attr("style", "display:none;")
+                }
+            });
+        });
+
+    </script>
+
+</head>
+
+<body style="font-family:verdana;background-color:#FFFAF0;">
+
+
+    <!-- SIDEBAR -->
+    <div class="sidenav">
+        <span onclick="window.location.replace('/menu')">Home</span> <br>
+        {{#if isAdm}}
+        <span onclick="window.location.replace('/usuarios')">Usuario</span> <br>
+        {{else}}
+        <span onclick="window.location.replace('/egresos')">Egreso</span> <br>
+        <span onclick="window.location.replace('/presupuestos')">Presupuesto</span> <br>
+        <span onclick="window.location.replace('/ingresos')">Ingreso</span> <br>
+        <span onclick="window.location.replace('/asociar')">Asociar Egreso e Ingreso</span> <br>
+        <span onclick="window.location.replace('/criterios')">Criterio y Categoria</span> <br>
+        {{/if}}
+        <span onclick="window.location.replace('/mensajes')">Mensaje</span> <br>
+        <span data-toggle="modal" data-target="#perfil_modal">Perfil</span> <br>
+        <span data-toggle="modal" data-target="#salir">Salir</span> <br>
+    </div>
+
+    <div class="main">
+        <!-- HEADER -->
+        <nav class="navbar justify-content-center" id="header">
+            <img id="menu" src="images/menu.png" height="30px" width="30px" style="filter: invert(100%);"
+                class="alingleft">
+            &nbsp;
+            <a class="navbar-brand" href="/menu">GESOC</a>
+        </nav>
+
+        <div class="container" align="center">
+
+            <!-- PERFIL -->
+            <div class="modal fade" id="perfil_modal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" id="exampleModalLabel">Datos del perfil</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <h5>Usuario: {{usuario.username}}</h5> <br>
+                            <h5>Nombre: {{usuario.apellido}}</h5> <br>
+                            <h5>Apllido: {{usuario.nombre}}</h5> <br>
+                            <h5>Rol: {{rol}}</h5> <br>
+                            <h5>Organización: {{usuario.organizacion.nombre}}</h5> <br>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <p>
+            <h4 style="text-align:center;">
+                <i class="fas fa-file"></i>
+                Organización
+            </h4>
+            <hr>
+            </p>
+            <form id="organizacion_form" action="/organizacion" method="post">
+                <div class="form-group row justify-content-center">
+                    <label for="select_org" data-toggle="tooltip" data-placement="right"
+                        title="Elija tipo de organización.">Seleccionar Tipo de Organización</label>
+                    <div class="col-sm-10">
+                        <div class="form-radio">
+                            <input class="form-radio-input" type="radio" name="tipo-org" value="juridica" id="juridica"
+                                required>
+                            <label class="form-radio-label" for="gridCheck1">
+                                Jurídica
+                            </label>
+                            <input class="form-radio-input" type="radio" name="tipo-org" value="base" id="base"
+                                required>
+                            <label class="form-radio-label" for="gridCheck1">
+                                Base
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div>
+                    <div class="form-group row justify-content-center">
+                        <div class="col-sm-2">
+                            <label for="nombre">Nombre</label>
+                            <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Nombre"
+                                required>
+                        </div>
+
+                        <div class="col-sm-2">
+                            <label for="razonSocial">Razon Social</label>
+                            <input type="text" class="form-control" id="razon-social" name="razonSocial"
+                                placeholder="Razon Social">
+                        </div>
+                    </div>
+
+                    <div class="form-group row justify-content-center">
+                        <div class="col-sm-2">
+                            <label for="cuit">CUIT</label id="nroIGJ">
+                            <input type="text" class="form-control" id="cuit" name="cuit" placeholder="CUIT" required>
+                        </div>
+
+                        <div class="col-sm-2">
+                            <label for="cuit">Número IGJ</label>
+                            <input type="number" class="form-control" id="nroIGJ" name="nroIGJ"
+                                placeholder="Numero IGJ">
+                        </div>
+                    </div>
+                    <hr>
+
+                    <div>
+                        <div class="form-group row justify-content-center">
+                            <div class="col-sm-2">
+                                <label for="moneda_presupuesto">Tipo</label>
+                                <select class="custom-select" id="tipo" name="tipo" data-toggle="tooltip"
+                                    data-placement="right" title="Tipo de organización jurídica." required>
+                                    <option name="tipo" value="empresa">Empresa</option>
+                                    <option name="tipo" value="osc">OSC</option>
+                                </select>
+                            </div>
+
+                            <div class="col-sm-4">
+                                <label for="select_org">Organización Juridica</label>
+                                <select class="custom-select" id="org-juridica" name="juridicaId" data-toggle="tooltip"
+                                    data-placement="right" title="Organizacion Juridica a cual pertenece" required>
+                                    {{#each organizaciones}}
+                                    <option name="juridicaId" value="{{this.id}}">{{this.nombre}}</option>
+                                    {{/each}}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div id="info-e" style="display: block;">
+                            <div class="form-group row justify-content-center">
+                                <div class="col-sm-2">
+                                    <label for="venta">Venta Anual</label>
+                                    <input type="number" class="form-control" name="venta" placeholder="Venta anual">
+                                </div>
+
+                                <div class="col-sm-2">
+                                    <label for="cantidad">Cant. Persona</label>
+                                    <input type="number" class="form-control" name="cantidad"
+                                        placeholder="Cantidad de persona">
+                                </div>
+                                <div class="col-sm-2">
+                                    <label for="Sector">Sector</label>
+                                    <select class="custom-select" id="sector" name="sector" data-toggle="tooltip"
+                                        data-placement="right" title="Sector de actividad de la empresa.">
+                                        <option name="sector" value="construccion">Construcción</option>
+                                        <option name="sector" value="servicios">Servicios</option>
+                                        <option name="sector" value="industriaymineria">Industria Y Minería</option>
+                                        <option name="sector" value="agropecuario">Agropecuario</option>
+                                        <option name="sector" value="comercio">Comercio</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="info-o" style="display: none;">
+                            <label for="mision">Misión</label>
+                            <textarea class="col-sm-4 form-control" id="mision" name="mision"
+                                style="min-height: 100px;"></textarea>
+                        </div>
+                    </div>
+                    <hr>
+
+                    <div class="form-group row justify-content-center">
+                        <div class="col-sm-2">
+                            <label for="nombre">Calle</label>
+                            <input type="text" class="form-control" id="calle" name="calle" placeholder="Calle"
+                                required>
+                        </div>
+                        <div class="col-sm-2">
+                            <label for="altura">Altura</label>
+                            <input type="number" class="form-control" id="altura" name="altura" placeholder="Altura"
+                                required>
+                        </div>
+                    </div>
+
+                    <div class="form-group row justify-content-center">
+                        <div class="col-sm-2">
+                            <label for="pais">País</label>
+                            <select class="custom-select" id="pais" name="pais" required>
+                                <option>Seleccionar País</option>
+                                {{#each paises}}
+                                <option name="pais" value="{{this.id}}">
+                                    {{this.name}}
+                                </option>
+                                {{/each}}
+                            </select>
+                        </div>
+                        <div class="col-sm-2">
+                            <label for="provincia">Provincia</label>
+                            <select class="custom-select" id="provincia" name="provincia" required>
+                                <option>Seleccionar Provincia</option>
+                            </select>
+                        </div>
+
+                        <div class="col-sm-2">
+                            <label for="ciudad">Ciudad</label>
+                            <select class="custom-select" id="ciudad" name="ciudad" required>
+                                <option>Seleccionar Ciudad</option>
+                            </select>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="form-group row justify-content-center">
+                        <div class="col-sm-5">
+                            <button type="submit" class="btn btn-primary">Cargar</button>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <button class="btn btn-primary" onclick="window.location.href='/usuario'">Volver</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+
+
+    </div>
+
+
+    <!--script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script!-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
+        crossorigin="anonymous"></script>
+
+    <div class=" modal fade" id="salir" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" style="">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="exampleModalLabel">Cerrar Sesión</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    ¿Desea cerrar la sesión?
+                </div>
+                <div class="modal-footer">
+
+                    <button type="button" class="btn btn-primary"
+                        onclick="window.location.replace('/logout')">Salir</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class=" modal fade" id="alert" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" style="">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="exampleModalLabel">Alert</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="alert-body">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal" id="out">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+
+</html>

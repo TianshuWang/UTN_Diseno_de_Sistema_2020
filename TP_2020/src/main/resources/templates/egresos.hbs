@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html style="height: 100%;">
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+
+    <link rel="stylesheet" href="resources/css/estilo.css" type="text/css">
+
+    <title>Egreso</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+        integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js"
+        integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ"
+        crossorigin="anonymous"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js"
+        integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY"
+        crossorigin="anonymous"></script>
+    <script type="text/javascript">
+        $(function () {
+            $("#cerrar_docu").click(function () {
+                location.reload(true);
+            });
+        });
+        $(document).ready(function () {
+            $("#menu").click(function () {
+                $(".sidenav").slideToggle("slow");
+            });
+        });       
+    </script>
+</head>
+
+<body style="font-family:verdana;background-color:#FFFAF0;">
+
+    <!-- SIDEBAR -->
+    <div class="sidenav">
+        <span onclick="window.location.replace('/menu')">Home</span> <br>
+        {{#if isAdm}}
+        <span onclick="window.location.replace('/usuarios')">Usuario</span> <br>
+        {{else}}
+        <span onclick="window.location.replace('/egresos')">Egreso</span> <br>
+        <span onclick="window.location.replace('/presupuestos')">Presupuesto</span> <br>
+        <span onclick="window.location.replace('/ingresos')">Ingreso</span> <br>
+        <span onclick="window.location.replace('/asociar')">Asociar Egreso e Ingreso</span> <br>
+        <span onclick="window.location.replace('/criterios')">Criterio y Categoria</span> <br>
+        {{/if}}
+        <span onclick="window.location.replace('/mensajes')">Mensaje</span> <br>
+        <span data-toggle="modal" data-target="#perfil_modal">Perfil</span> <br>
+        <span data-toggle="modal" data-target="#salir">Salir</span> <br>
+    </div>
+
+
+    <div class="main">
+        <!-- HEADER -->
+        <nav class="navbar justify-content-center" id="header">
+            <img id="menu" src="images/menu.png" height="30px" width="30px" style="filter: invert(100%);"
+                class="alingleft">
+            &nbsp;
+            <a class="navbar-brand" href="/menu">GESOC</a>
+        </nav>
+
+        <div class="container" align="center">
+
+            <!-- PERFIL -->
+            <div class="modal fade" id="perfil_modal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" id="exampleModalLabel">Datos del perfil</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <h5>Usuario: {{usuario.username}}</h5> <br>
+                            <h5>Nombre: {{usuario.apellido}}</h5> <br>
+                            <h5>Apllido: {{usuario.nombre}}</h5> <br>
+                            <h5>Rol: {{rol}}</h5> <br>
+                            <h5>Organización: {{usuario.organizacion.nombre}}</h5> <br>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <p>
+            <h4 style="text-align:center;">
+                <i class="fas fa-file"></i>
+                Egreso
+            </h4>
+            <hr>
+            </p>
+
+            <div class="form-row">
+                <a href="/egreso" class="btn btn-primary">Cargar Egreso</a>
+
+                <table class="table table-hover" id="ingresos_table">
+
+                    <thead>
+                        <th scope="col">Fecha&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        </th>
+                        <th scope="col">Monto</th>
+                        <th scope="col">Items</th>
+                        <th scope="col">Categorias</th>
+                        <th scope="col">I. Asociado</th>
+                        <th scope="col">P. Requeridos</th>
+                        <th scope="col">P. Elegido</th>
+                        <th scope="col">Documento</th>
+                    </thead>
+
+                    <tbody>
+                        {{#each egresosOrganizacion}}
+                        <tr>
+                            <td width=5%>{{this.fechaDeOperacion}}</td>
+                            <td>{{this.moneda.symbol}}{{this.montoTotal}}</td>
+                            <td>
+                                <button id="{{this.id}}" type="button" data-toggle="modal"
+                                    data-target="#items_modal_{{this.id}}" class="btn btn-primary btn-sm">
+                                    Detalle
+                                </button>
+
+                                <div class=" modal fade" id="items_modal_{{this.id}}" tabindex="-1"
+                                    aria-labelledby="exampleModalLabel" aria-hidden="true" style="">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h4 class="modal-title" id="exampleModalLabel">Items</h4>
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                    aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                {{#each this.itemEgresos}}
+
+                                                <div class="form-row">
+                                                    <div>
+                                                        <h5>Item:</h5>
+                                                        <ul>
+                                                            <li>Producto: {{this.productoServicio.nombre}}</li>
+                                                            <li>Descripción: {{this.productoServicio.descripcion}}
+                                                            </li>
+                                                            <li>Tipo: {{this.productoServicio.tipoProductoServicio}}
+                                                            </li>
+                                                            <li>Precio
+                                                                Unitario:{{this.moneda.symbol}}{{this.precioUnitario}}
+                                                            </li>
+                                                            <li>Cantidad: {{this.cantidad}}</li>
+                                                            <li>Monto:{{this.moneda.symbol}}{{this.montoTotal}}</li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                                <hr>
+                                                {{/each}}
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-danger"
+                                                    data-dismiss="modal">Cerrar</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>{{#if this.categoriasList}}
+
+                                <button id="{{this.id}}" type="button" data-toggle="modal"
+                                    data-target="#categorias_modal_{{this.id}}" class="btn btn-primary btn-sm">
+                                    Detalle
+                                </button>
+
+
+                                <div class=" modal fade" id="categorias_modal_{{this.id}}" tabindex="-1"
+                                    aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h4 class="modal-title" id="exampleModalLabel">Categorias</h4>
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                    aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                {{#each this.categoriasList}}
+                                                <lu>
+                                                    <li>{{this.descripcion}}</li>
+                                                </lu>
+                                                {{/each}}
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button data-target="#agregar_categorias_modal_{{this.id}}"
+                                                    data-toggle="modal" id="" type="button"
+                                                    class="btn btn-primary">Asociar
+                                                </button>
+                                                <button type="button" class="btn btn-danger"
+                                                    data-dismiss="modal">Cerrar</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="modal fade" id="agregar_categorias_modal_{{this.id}}" tabindex="-1"
+                                    aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+
+                                            <div class="modal-header">
+                                                <h4 class="modal-title" id="exampleModalLabel">Nuevas Categorias
+                                                </h4>
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                    aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <form id="categoriaForm" action="/egresos/categorias" method="post">
+                                                <div class="modal-body">
+                                                    <input type="hidden" id="id_egreso" name="id_egreso"
+                                                        value="{{this.id}}">
+                                                    <select class="custom-select" id="categorias" name="categorias"
+                                                        multiple size="6" required>
+                                                        {{#each categorias}}
+                                                        <option value="{{this.id}}">{{this.descripcion}}</option>
+                                                        {{/each}}
+                                                    </select>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="submit" id="" class="btn btn-primary">Agregar</button>
+                                                    <button type="button" class="btn btn-danger"
+                                                        data-dismiss="modal">Cerrar</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {{else}}
+
+                                <button data-target="#agregar_categorias_modal_{{this.id}}" data-toggle="modal" id=""
+                                    type="button" class="btn btn-primary btn-sm">Asociar
+                                </button>
+
+                                <div class="modal fade" id="agregar_categorias_modal_{{this.id}}" tabindex="-1"
+                                    aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <form id="nuevas_categorias_form" action="/egresos/categorias"
+                                                method="post">
+                                                <div class="modal-header">
+                                                    <h4 class="modal-title" id="exampleModalLabel">Nuevas Categorias
+                                                    </h4>
+                                                    <button type="button" class="close" data-dismiss="modal"
+                                                        aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <input type="hidden" id="id_egreso" name="id_egreso"
+                                                        value="{{this.id}}">
+                                                    <select class="custom-select" id="categorias" name="categorias"
+                                                        multiple size="6" required>
+                                                        {{#each categorias}}
+                                                        <option value="{{this.id}}">{{this.descripcion}}</option>
+                                                        {{/each}}
+                                                    </select>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="submit" id="" class="btn btn-primary">Agregar</button>
+                                                    <button type="button" class="btn btn-danger"
+                                                        data-dismiss="modal">Cerrar</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                {{/if}}
+                            </td>
+                            <td>
+                                {{#if this.ingresoAsociado}}
+                                <button id="{{this.id}}" type="button" data-toggle="modal"
+                                    data-target="#ingreso_modal_{{this.id}}" class="btn btn-primary btn-sm">
+                                    Detalle
+                                </button>
+
+                                <div class=" modal fade" id="ingreso_modal_{{this.id}}" tabindex="-1"
+                                    aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h4 class="modal-title" id="exampleModalLabel">Detalle de Ingreso</h4>
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                    aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <h5>ID Ingreso: {{this.ingresoAsociado.id}} <span id="f_emision"></span>
+                                                </h5>
+                                                <br>
+                                                <h5>Fecha de Operación: {{this.ingresoAsociado.fechaDeOperacion}} <span
+                                                        id="f_lectura"></span></h5>
+                                                <br>
+                                                <h5>Descripción: {{this.ingresoAsociado.descripcion}} <span
+                                                        id="m_contenido"></span></h5>
+                                                <br>
+                                                <h5>Monto Total: {{this.ingresoAsociado.montoTotal}}<span
+                                                        id="m_contenido"></span></h5>
+                                                <br>
+                                                <h5>Moneda: {{this.ingresoAsociado.moneda.id}}<span
+                                                        id="m_contenido"></span></h5>
+                                                <br>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-danger"
+                                                    data-dismiss="modal">Cerrar</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {{/if}}
+                            </td>
+
+                            <td>
+                                {{#if this.presupuestosRequeridos}}
+
+                                <button id="{{this.id}}" type="button" data-toggle="modal"
+                                    data-target="#presupuestos_modal_{{this.id}}" class="btn btn-primary btn-sm">
+                                    Detalle
+                                </button>
+
+                                <div class=" modal fade" id="presupuestos_modal_{{this.id}}" tabindex="-1"
+                                    aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h4 class="modal-title" id="exampleModalLabel">Detalles Presupuesto</h4>
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                    aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+
+                                                {{#each this.presupuestosRequeridos}}
+                                                <h5>ID Presupuesto: {{this.id}} <span id="f_emision"></span></h5>
+                                                <lu>
+                                                    <li>Fecha de Presupuesto: {{this.fechaPresupuesto}}</li>
+                                                    <li>Monto Total: {{this.montoTotal}}</li>
+                                                    <li>Moneda: {{this.moneda.id}}</li>
+                                                </lu>
+                                                <br>
+                                                {{/each}}
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-danger"
+                                                    data-dismiss="modal">Cerrar</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {{/if}}
+                            </td>
+
+                            <td>
+                                {{#if this.presupuestoSeleccionado}}
+
+                                <button id="{{this.id}}" type="button" data-toggle="modal"
+                                    data-target="#presupuesto_modal_{{this.id}}" class="btn btn-primary btn-sm">
+                                    Detalle
+                                </button>
+
+                                <div class=" modal fade" id="presupuesto_modal_{{this.id}}" tabindex="-1"
+                                    aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h4 class="modal-title" id="exampleModalLabel">Detalles Presupuesto</h4>
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                    aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <h5>ID Presupuesto: {{this.presupuestoSeleccionado.id}} <span
+                                                        id="f_emision"></span></h5>
+                                                <lu>
+                                                    <li>Fecha de Presupuesto:
+                                                        {{this.presupuestoSeleccionado.fechaPresupuesto}}</li>
+                                                    <li>Monto Total: {{this.presupuestoSeleccionado.montoTotal}}</li>
+                                                    <li>Moneda: {{this.presupuestoSeleccionado.moneda.id}}</li>
+                                                </lu>
+                                                <br>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-danger"
+                                                    data-dismiss="modal">Cerrar</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {{/if}}
+                            </td>
+                            <td>
+                                {{#if this.documento}}
+                                {{#is 'link' this.documento}}
+                                <button onclick="location.href='{{this.tipoDeDocumento.link}}'"
+                                    class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="right"
+                                    title="{{this.tipoDeDocumento.link}}">Link</button>
+                                {{/is}}
+                                {{#is 'comprobante' this.documento}}
+                                <form id="descarga_form" method="get" action="/descarga/{{this.id}}">
+                                    <button id="{{this.id}}" type="submit"
+                                        class="btn btn-primary btn-sm">Descargar</button>
+                                </form>
+                                {{/is}}
+                                {{else}}
+                                <button id="{{this.id}}" type="button" data-toggle="modal"
+                                    data-target="#archivo_{{this.id}}" class="btn btn-primary btn-sm">
+                                    Cargar
+                                </button>
+                                {{/if}}
+                            </td>
+                            <div class=" modal fade" id="archivo_{{this.id}}" tabindex="-1"
+                                aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h4 class="modal-title" id="exampleModalLabel">Cargar Documentación</h4>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+
+                                        <div class="modal-body">
+                                            <form id="archivo_form" action="/archivo" method="post"
+                                                enctype="multipart/form-data">
+
+                                                <input type="hidden" name="id_egreso" id="id_egreso"
+                                                    value="{{this.id}}">
+                                                <div class="input-group">
+                                                    <div class="col-sm-7">
+                                                        <input type="file" name="archivo" class="form-control input-sm"
+                                                            id="archivo">
+
+                                                    </div>
+                                                    <button type="submit" class="btn btn-primary">Cargar</button>
+
+                                                </div>
+                                            </form>
+                                            <hr>
+                                            <form id="archivo_form" action="/link" method="post">
+                                                <input type="hidden" name="id_egreso" id="id_egreso"
+                                                    value="{{this.id}}">
+                                                <div class="input-group">
+                                                    <div class="col-sm-7">
+                                                        <input type="text" class="form-control input-sm" name="link"
+                                                            id="link" placeholder="Link..">
+
+                                                    </div>
+
+                                                    <button type="submit" class="btn btn-primary">Cargar</button>
+
+                                                </div>
+
+                                            </form>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-danger" data-dismiss="modal"
+                                                    id="cerrar_docu">Cerrar</button>
+                                                <br>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+            </div>
+
+
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
+        crossorigin="anonymous"></script>
+    <div class=" modal fade" id="salir" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" style="">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="exampleModalLabel">Cerrar Sesión</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    ¿Desea cerrar la sesión?
+                </div>
+                <div class="modal-footer">
+
+                    <button type="button" class="btn btn-primary"
+                        onclick="window.location.replace('/logout')">Salir</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+
+</html>
+
+
+<!--
+onclick="ver('this.id')"
+ value="[this.ingresoAsociado.moneda.id]"
+ ingresoId="this.ingresoAsociado.id}}" ingresoFecha="this.ingresoAsociado.fechaDeOperacion}}"
+ ingresoDescripcion="this.ingresoAsociado.descripcion" ingresoMonto="this.ingresoAsociado.montoTotal}}"
+ ingresoMoneda="this.ingresoAsociado.moneda.id}}"
+-->

@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html style="height: 100%;">
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+
+    <link rel="stylesheet" href="resources/css/estilo.css" type="text/css">
+
+    <title>Usuario</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+        integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js"
+        integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ"
+        crossorigin="anonymous"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js"
+        integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY"
+        crossorigin="anonymous"></script>
+</head>
+
+<body style="font-family:verdana;background-color:#FFFAF0;">
+
+    <!-- SIDEBAR -->
+    <div class="sidenav">
+        <span onclick="window.location.replace('/menu')">Home</span> <br>
+        {{#if isAdm}}
+        <span onclick="window.location.replace('/usuarios')">Usuario</span> <br>
+        {{else}}
+        <span onclick="window.location.replace('/egresos')">Egreso</span> <br>
+        <span onclick="window.location.replace('/presupuestos')">Presupuesto</span> <br>
+        <span onclick="window.location.replace('/ingresos')">Ingreso</span> <br>
+        <span onclick="window.location.replace('/asociar')">Asociar Egreso e Ingreso</span> <br>
+        <span onclick="window.location.replace('/criterios')">Criterio y Categoria</span> <br>
+        {{/if}}
+        <span onclick="window.location.replace('/mensajes')">Mensaje</span> <br>
+        <span data-toggle="modal" data-target="#perfil_modal">Perfil</span> <br>
+        <span data-toggle="modal" data-target="#salir">Salir</span> <br>
+    </div>
+
+
+    <div class="main">
+        <!-- HEADER -->
+        <nav class="navbar justify-content-center" id="header">
+            <img id="menu" src="images/menu.png" height="30px" width="30px" style="filter: invert(100%);"
+                class="alingleft">
+            &nbsp;
+            <a class="navbar-brand" href="/menu">GESOC</a>
+        </nav>
+
+        <div class="container" align="center">
+
+            <!-- PERFIL -->
+            <div class="modal fade" id="perfil_modal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" id="exampleModalLabel">Datos del perfil</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <h5>Usuario: {{usuario.username}}</h5> <br>
+                            <h5>Nombre: {{usuario.apellido}}</h5> <br>
+                            <h5>Apllido: {{usuario.nombre}}</h5> <br>
+                            <h5>Rol: {{rol}}</h5> <br>
+                            <h5>Organización: {{usuario.organizacion.nombre}}</h5> <br>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <p>
+            <h4 style="text-align:center;">
+                <i class="fas fa-file"></i>
+                Usuario
+            </h4>
+            <hr>
+            </p>
+
+            <div class="form-row">
+                <button class="btn btn-primary" onclick="window.location.href='/usuario'">Cargar Usuario</button>
+                <table class="table table-hover" id="ingresos_table">
+                    <thead>
+                        <th scope="col">Usuario</th>
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Apellido</th>
+                        <th scope="col">Rol</th>
+                        <th scope="col">Revisor</th>
+                        <th scope="col">Organización</th>
+                    </thead>
+                    <tbody>
+                        {{#each usuarios}}
+                        <tr>
+                            <td>{{this.username}}</td>
+                            <td>{{this.nombre}}</td>
+                            <td>{{this.apellido}}</td>
+                            <td>
+                                {{#if this.isAdm}}
+                                Administrador
+                                {{else}}
+                                Comun
+                                {{/if}}
+                            </td>
+                            <td>
+                                {{#if this.revisor}}
+                                Sí
+                                {{else}}
+                                No
+                                {{/if}}
+                            </td>
+                            <td>
+                                <span id="{{this.organizacion.id}}" data-toggle="modal"
+                                    data-target="#org_modal_{{this.organizacion.id}}"
+                                    style="text-decoration:underline;cursor:pointer">{{this.organizacion.nombre}}</span>
+
+                                <div class=" modal fade" id="org_modal_{{this.organizacion.id}}" tabindex="-1"
+                                    aria-labelledby="exampleModalLabel" aria-hidden="true" style="">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h4 class="modal-title" id="exampleModalLabel">Organización</h4>
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                    aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="form-row">
+                                                    <div>
+                                                        <h5>{{this.organizacion.nombre}}:</h5>
+                                                        <ul>
+                                                            <li>Tipo: {{this.organizacion.tipo}}</li>                                                            
+                                                             {{#isEquals 'Base' this.organizacion}}
+                                                            <li>Organización Juridica:
+                                                                {{this.organizacionJuridica.nombre}}</li>
+                                                            {{/isEquals}}
+
+                                                            {{#isEquals 'OSC' this.organizacion}}
+                                                            <li>Dirección:
+                                                                Calle:{{this.direccionPostal.calle}}&nbsp;
+                                                                Altura:{{this.direccionPostal.altura}}&nbsp;
+                                                                Ciudad/Barrio:{{this.direccionPostal.ciudad.name}}&nbsp;
+                                                                Provincia:{{this.direccionPostal.provincia.name}}&nbsp;
+                                                                País:{{this.direccionPostal.pais.name}}&nbsp;
+                                                            </li>
+                                                            <li>Razon Social: {{this.razonSocial}}</li>
+                                                            <li>CUIT: {{this.cuit}}</li>
+                                                            <li>Misión: {{this.mision}}</li>
+                                                            {{/isEquals}}                                   
+                                                            
+                                                            {{#isEquals 'Empresa' this.organizacion}}
+                                                            <li>Dirección:
+                                                                Calle:{{this.direccionPostal.calle}}&nbsp;
+                                                                Altura:{{this.direccionPostal.altura}}&nbsp;
+                                                                Ciudad/Barrio:{{this.direccionPostal.ciudad.name}}&nbsp;
+                                                                Provincia:{{this.direccionPostal.provincia.name}}&nbsp;
+                                                                País:{{this.direccionPostal.pais.name}}&nbsp;
+                                                            </li>
+                                                            <li>Razon Social: {{this.razonSocial}}</li>
+                                                            <li>CUIT: {{this.cuit}}</li>
+                                                            <li>Sector: {{this.sector}}</li>
+                                                            <li>Categoria: {{this.categoria}}</li>
+                                                            {{/isEquals}}
+                                                        </ul>
+             
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-danger"
+                                                    data-dismiss="modal">Cerrar</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            </td>
+                        </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+    <!--script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script!-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
+        crossorigin="anonymous"></script>
+
+    <script>
+        $(document).ready(function () {
+            $("#menu").click(function () {
+                $(".sidenav").slideToggle("slow");
+            });
+        });
+
+    </script>
+    <div class=" modal fade" id="salir" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" style="">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="exampleModalLabel">Cerrar Sesión</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    ¿Desea cerrar la sesión?
+                </div>
+                <div class="modal-footer">
+
+                    <button type="button" class="btn btn-primary"
+                        onclick="window.location.replace('/logout')">Salir</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+
+</html>

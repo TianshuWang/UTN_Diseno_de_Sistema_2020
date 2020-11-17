@@ -1,6 +1,6 @@
 package presupuesto.validator.validacion;
 
-import egreso.egreso.Egreso;
+import egreso.Egreso;
 
 public class CriterioSeleccionPresupuesto implements ValidacionTransparencia {
     @Override

@@ -1,11 +1,13 @@
 package organizacion.categoria;
 
-import organizacion.organizacionJuridicaBuilder.Empresa;
+import organizacion.organizacionJuridica.Empresa;
 
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.util.List;
 
 public class NoComisionista implements TipoDeActividad {
-
     @Override
     public void calcularCategoria(Empresa empresa, Sector sector) {
         float ventaAnualEmpresa = empresa.getVentaAnual();

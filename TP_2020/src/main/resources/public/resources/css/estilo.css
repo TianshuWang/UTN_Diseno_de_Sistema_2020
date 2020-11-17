@@ -1,0 +1,108 @@
+#header {
+    background-color:#0069D9;
+    text-align: center;
+}
+
+#header a{
+    color: white;
+}
+
+
+.container {
+    margin-top: 50px;
+}
+
+
+.sidenav {
+    height: 100%;
+    width: 150px;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: #111;
+    overflow-x: hidden;
+    padding-top: 80px;
+    align-content: center;
+}
+
+.navbar {
+    height: 50px;
+    width: 100%;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: #111;
+    overflow-x: hidden;
+    padding-top: 80px;
+    align-content: center;
+}
+
+.sidenav a {
+    padding: 6px 8px 6px 16px;
+    text-decoration: none;
+    font-size: 18px;
+    color: white;
+    display: block;
+}
+
+.sidenav a:hover {
+    color:#0069D9;
+}
+
+.sidenav span {
+    padding: 6px 8px 6px 16px;
+    text-decoration: none;
+    font-size: 18px;
+    color: white;
+    display: block;
+    cursor: pointer;
+}
+
+.sidenav span:hover {
+    color:#0069D9;
+}
+
+.main {
+    font-size: 16px;
+    width: auto;
+}
+
+#w_mensaje {
+    max-height: 500px;
+    overflow-y: scroll;
+}
+
+
+.toast {
+    display: none;
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin-right: 50px;
+    margin-top: 50px;
+}
+
+.toast-body {
+    background-color: #4dffa6;
+}
+
+#not-header{
+    background-color: #ffffcc;
+}
+
+table {
+    font-size: 16px;
+}
+
+#add_row {
+    color: green;
+    cursor: pointer;
+}
+
+#del_row {
+    color: red;
+    cursor: pointer;
+}
+

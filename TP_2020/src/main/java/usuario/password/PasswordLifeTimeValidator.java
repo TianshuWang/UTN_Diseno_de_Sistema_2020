@@ -10,21 +10,20 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
 public class PasswordLifeTimeValidator {
-    private Integer limitDays;
+    private static Integer limitDays;
 
-    public PasswordLifeTimeValidator() throws FileNotFoundException {
-        limitDays = Integer.parseInt(GetDataConfig.getValue("limitDays"));
-    }
-
-    public void checkPasswordLastUpdate(Password password) throws PasswordExpired {
-        LocalDateTime presentTime = LocalDateTime.now();
-        if(password.getPasswordInitialTime().until(presentTime,ChronoUnit.DAYS) > limitDays){
-            throw new PasswordExpired(this.limitDays);
+    static {
+        try {
+            limitDays = Integer.parseInt(GetDataConfig.getValue("limitDays"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         }
     }
 
-    private void changePassword(Password password, String newPassword) throws FileNotFoundException, PassawordException {
-        new PasswordValidator().validatePassword(newPassword);
-        password.changePassword(newPassword);
+    public static void checkPasswordLastUpdate(Password password) throws TransactionException{
+        LocalDateTime presentTime = LocalDateTime.now();
+        if(password.getPasswordInitialTime().until(presentTime,ChronoUnit.DAYS) > limitDays){
+            throw new TransactionException(BusinessError.PASSWORD_EXPIRED);
+        }
     }
 }

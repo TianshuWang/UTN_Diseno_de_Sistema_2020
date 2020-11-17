@@ -1,66 +1,144 @@
 package ingreso;
 
-import Importe.Importe;
-import direccion_moneda.ConversorDeMoneda;
-import direccion_moneda.mercadolibre_api.molde.Moneda;
-import generadorIdentificador.GeneradorIdentificador;
-import organizacion.Organizacion;
+import com.google.gson.annotations.Expose;
+import converters.LocalDateAttributeConverter;
+import direccion_moneda.mercadolibre_api.model.Moneda;
+import egreso.Egreso;
+import entityPersistente.EntidadPersistente;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+import presupuesto.Presupuesto;
+import usuario.usuario.Usuario;
 
-import java.io.IOException;
-import java.math.BigDecimal;
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-public class Ingreso {
-    private String identificador;
+@Entity
+@Table(name = "ingreso")
+public class Ingreso extends EntidadPersistente {
+    @Column(name = "descripcion")
     private String descripcion;
-    private List<ItemIngreso> itemIngresoList;
-    private Importe montoTotal;
-    private Organizacion organizacion;
+
+    @Expose(serialize = true, deserialize = true)
+    @Column(name = "monto_total")
+    private double montoTotal;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "moneda_id", referencedColumnName = "id")
+    private Moneda moneda;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "usuario_id", referencedColumnName = "username")
+    private Usuario usuario;
+
+    @Convert(converter = LocalDateAttributeConverter.class)
+    @Column(name = "fecha_operacion")
+    @Expose(serialize = true, deserialize = true)
     private LocalDate fechaDeOperacion;
 
-    public Ingreso(Organizacion organizacion, String descripcion, LocalDate fechaDeOperacion, ItemIngreso ...itemIngreso) throws IOException {
-        this.identificador = GeneradorIdentificador.generarIdentificadorIngreso("%05d");
-        this.organizacion = organizacion;
-        this.fechaDeOperacion = fechaDeOperacion;
-        this.descripcion = descripcion;
-        this.itemIngresoList = new ArrayList<>();
-        Collections.addAll(itemIngresoList,itemIngreso);
-        Moneda moneda = this.organizacion.getTipoDeOrganizacion().getDireccionPostal().getUbicacion().getMoneda();
-        for(ItemIngreso i:this.itemIngresoList){
-            ConversorDeMoneda.instancia().convertir(i.getMontoTtotal(),moneda);
+    @Convert(converter = LocalDateAttributeConverter.class)
+    @Column(name = "fecha_aceptacion")
+    private LocalDate fechaDeAceptacion;
+
+    @OneToMany(mappedBy = "ingresoAsociado", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @Fetch(FetchMode.SELECT)
+    private List<Egreso> egresosAsociados;
+
+    private Ingreso(){
+
+    }
+
+    public Ingreso(Builder builder) {
+        this.usuario = builder.usuario;
+        this.fechaDeOperacion = builder.fechaDeOperacion;
+        this.fechaDeAceptacion = builder.fechaDeAceptacion;
+        this.descripcion = builder.descripcion;
+        this.montoTotal = builder.montoTotal;
+        this.moneda = builder.moneda;
+        this.egresosAsociados = new ArrayList<>();
+    }
+
+    public static class Builder{
+        private String descripcion;
+        private double montoTotal;
+        private Moneda moneda;
+        private LocalDate fechaDeOperacion;
+        private Usuario usuario;
+        private LocalDate fechaDeAceptacion;
+
+        public Builder agregarDescripcion(String descripcion){
+            this.descripcion = descripcion;
+            return this;
         }
-        this.montoTotal = new Importe(calcularValorTotal().toString(),moneda);
+
+        public Builder agregarMontoTotal(double montoTotal){
+            this.montoTotal = montoTotal;
+            return this;
+        }
+
+        public Builder agregarMoneda(Moneda moneda){
+            this.moneda = moneda;
+            return this;
+        }
+
+        public Builder agregarFechaDeOperacion(LocalDate fecha){
+            this.fechaDeOperacion = fecha;
+            return this;
+        }
+
+        public Builder agregarFechaDeAceptacion(LocalDate fecha){
+            this.fechaDeAceptacion = fecha;
+            return this;
+        }
+
+        public Builder agregarUsuario(Usuario usuario){
+            this.usuario = usuario;
+            return this;
+        }
+
+        public Ingreso build(){
+            return new Ingreso(this);
+        }
     }
 
-    private BigDecimal calcularValorTotal(){
-        return itemIngresoList.stream().map(i->i.getMontoTtotal().getValor()).reduce(BigDecimal.ZERO,BigDecimal::add);
-    }
 
-    //getters
-    public Organizacion getOrganizacion() {
-        return organizacion;
-    }
+    //getters and setters
 
-    public String getIdentificador() {
-        return identificador;
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
 
     public String getDescripcion() {
         return descripcion;
     }
 
-    public List<ItemIngreso> getItemIngresoList() {
-        return itemIngresoList;
+    public double getMontoTotal() {
+        return montoTotal;
     }
 
-    public Importe getMontoTotal() {
-        return montoTotal;
+    public Moneda getMoneda() {
+        return moneda;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
     }
 
     public LocalDate getFechaDeOperacion() {
         return fechaDeOperacion;
+    }
+
+    public LocalDate getFechaDeAceptacion() {
+        return fechaDeAceptacion;
+    }
+
+    public List<Egreso> getEgresosAsociados() {
+        return egresosAsociados;
+    }
+
+    public void setEgresosAsociados(List<Egreso> egresosAsociados) {
+        this.egresosAsociados = egresosAsociados;
     }
 }

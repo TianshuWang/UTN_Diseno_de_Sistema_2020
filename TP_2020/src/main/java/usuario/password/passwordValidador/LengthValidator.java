@@ -10,7 +10,7 @@ public class LengthValidator implements Validator {
     private int lengthMin;
     private int lengthMax;
 
-    public void validatePassword(String password) throws FileNotFoundException, PassawordException {
+    public void validatePassword(String password) throws FileNotFoundException, TransactionException {
         this.getLengthData();
         hasTheAdecuatedLong = hasTheAdecuatedLong(password);
          if(hasTheAdecuatedLong == false) {
@@ -28,8 +28,14 @@ public class LengthValidator implements Validator {
         return passSize >= lengthMin && passSize <= lengthMax;
     }
 
-    private void whatFailed(String password) throws PassawordException {
-        throw new PassawordException("The Password Doesn't Have The Adequate length");
+    private void whatFailed(String password) throws TransactionException {
+
+        throw new TransactionException(BusinessError.PASSWORD_EXCEPTION,
+                "Contraseña debe tener entre "
+                        + Integer.valueOf(lengthMin)
+                        + " Y "
+                        + Integer.valueOf(lengthMax)
+                        + " Caracteres De Longitud");
     }
 
 }

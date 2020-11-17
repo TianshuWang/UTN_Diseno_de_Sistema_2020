@@ -1,0 +1,367 @@
+#header-page {
+  border-radius: 8px;
+  background-color: :#0069D9;
+  text-align: center;
+  height: 70px;
+}
+
+#navigation {
+
+}
+
+.label-cargar-egreso {
+  position: relative;
+  top: 25px;
+  left: 510px;
+
+  font-family: 'Arial Bold', 'Arial';
+
+  font-weight: 700;
+  font-size: 32px;
+}
+
+/* Tabla Egresos */
+
+table.blueTable {
+
+  position: relative;
+
+  border: 2px solid #2E86C1;
+  border-color: black;
+  background-color: white;
+  width: 650px;
+  text-align: center;
+  border-collapse: collapse;
+}
+
+table.blueTable td, table.blueTable th {
+  border: 1px solid #AAAAAA;
+}
+
+table.blueTable tbody td {
+  font-size: 15px;
+}
+
+table.blueTable thead {
+  background: #2471A3;
+}
+
+table.blueTable thead th {
+  font-size: 15px; tamaño letra titulos columnas
+  font-weight: bold;
+  color: #FFFFFF;
+  text-align: center;
+  border-left: 2px solid #2471A3;
+}
+
+table.blueTable thead th:first-child {
+  border-left: none;
+}
+
+
+
+/* Secciones */
+
+.box-contenido {
+}
+
+/*
+.seccion-proveedor {
+  position: absolute;
+  left: 10px;
+
+  border: 1px;
+  border-radius: 0px;
+  border-style: solid;
+  border-color: black;
+
+  height: 450px;
+  width: 400px;
+}
+*/
+.box-items-input {
+  display: inline;
+  position: absolute;
+  left: 30px;
+
+  padding-top: 20px;
+  padding-left: 20px;
+
+  border: 1px;
+  border-style: solid;
+  border-color: black;
+
+  height: 235px;
+  width: 220px;
+}
+
+.seccion-item {
+  display: inline;
+  position: relative;
+}
+
+/* estados rectangulos azules */
+
+.paso-style-general {
+
+  position: absolute;
+  top: 15px;
+
+  box-sizing: border-box;
+  border: 1px;
+  border-style: solid;
+  border-color: black;
+  border-radius: 10px;
+
+  height: 12px;
+  width: 70px;
+}
+
+.paso-actual {
+  background-color: rgba(22, 155, 213, 1);
+}
+
+.paso1 {
+  left: 380px;
+}
+
+.paso2 {
+  left: 460px;
+}
+
+.paso3 {
+  left: 540px;
+}
+
+.paso4 {
+  left: 620px;
+}
+
+/* -------------------------- */
+
+.titulo-contenido {
+  position: relative;
+  left: 480px;
+  font-size: 25px;
+}
+
+/* Labels e Inputs Contenidos */
+
+/* Paso 1*/
+
+.label-style-paso1 {
+  display: inline;
+  position: relative;
+  left: 100px;
+  font-size: 16px;
+  font-weight: 500;
+  opacity: 0.5;
+}
+
+.input-style-paso1 {
+  position: relative;
+  text-align: center;
+  left: 100px;
+  width: 50px;
+}
+
+/* Paso 2 */
+
+.label-style-paso2 {
+  display: inline;
+  position: relative;
+  left: 100px;
+  font-size: 15px;
+  font-weight: 500;
+  opacity: 0.5;
+}
+
+.input-style {
+  position: relative;
+  text-align: center;
+  left: 100px;
+  width: 200px;
+}
+
+/* Paso 3 */
+
+.titulo-direccion-style-paso2 {
+  position: relative;
+  top: -172px;
+  left: 400px;
+  font-size: 25px;
+}
+
+.label-direccion-style-paso2 {
+  position: absolute;
+  left: 400px;
+  font-size: 20px;
+}
+
+.input-style-direccion-paso2 {
+  position: absolute;
+  left: 470px;
+  font-size: 20px;
+  width: 100px;
+}
+
+/* Botones */
+
+.button-foot {
+  display: inline;
+
+  border-radius: 1px;
+  border-color: rgba(22, 155, 213, 1);
+  border-radius: 4px;
+
+  background-color: rgba(22, 155, 213, 1);
+
+  font-size: 13px;
+  color: white;
+
+  width: 140px;
+  height: 33px;
+}
+
+.button-sgte {
+  position: absolute;
+   bottom: 10px;
+   right: 40px;
+}
+
+.button-ant {
+  position: absolute;
+   bottom: 10px;
+   left: 40px;
+
+}
+
+.button-agregar {
+  display: inline;
+
+  border-radius: 1px;
+  border-color: rgba(22, 155, 213, 1);
+  border-radius: 4px;
+
+  background-color: rgba(22, 155, 213, 1);
+
+  font-size: 13px;
+  color: white;
+
+  width: 175px;
+  height: 30px;
+}
+
+.button-fin {
+  position: absolute;
+   bottom: 10px;
+   right: 40px;
+}
+
+/* Fijos */
+
+#titulo-egreso {
+  display: inline;
+  position: relative;
+  top: 25px;
+  left: 460px;
+  font-family: 'Arial Bold', 'Arial';
+  font-weight: 700;
+  font-size: 32px;
+}
+
+#label-proveedor {
+  position: relative;
+  left: 480px;
+  font-size: 25px;
+}
+
+#seccion-infoPrincipal {
+  position: relative;
+  left: 350px;
+
+  border: 1px;
+  border-style: solid;
+  border-radius: 10px;
+  border-color: black;
+  border-opacity: 0.3;
+
+  height: 100px;
+  width: 430px;
+}
+
+#seccion-proveedor {
+  position: relative;
+  left: 350px;
+
+  border: 1px;
+  border-style: solid;
+  border-radius: 10px;
+  border-color: black;
+  border-opacity: 0.3;
+
+  height: 400px;
+  width: 430px;
+}
+
+#seccion-medio {
+  position: relative;
+  left: 350px;
+
+  border: 1px;
+  border-style: solid;
+  border-radius: 10px;
+  border-color: black;
+  border-opacity: 0.3;
+
+  height: 200px;
+  width: 430px;
+}
+
+#caja-contenedor-pasos{
+  position: absolute;
+  left: 350px;
+
+  box-sizing: border-box;
+  border: 3px;
+  border-style: solid;
+  border-color: rgba(22, 155, 213, 1);
+  border-radius: 10px;
+
+  height: 550px;
+  width: 1000px;
+}
+
+#label-item {
+  display: inline;
+  position: absolute;
+  left: 30px;
+  font-size: 25px;
+}
+
+#label-items {
+  display: inline;
+  position: relative;
+  top: -35px;
+  left: 300px;
+  font-size: 25px;
+}
+
+#button-cargar-egreso {
+  display: inline;
+  position: absolute;
+  bottom: -69px;
+  left: 810px;
+
+  border-radius: 1px;
+  border-color: rgba(22, 155, 213, 1);
+  border-radius: 4px;
+
+  background-color: rgba(22, 155, 213, 1);
+
+  font-size: 13px;
+  color: white;
+
+  width: 140px;
+  height: 33px;
+}

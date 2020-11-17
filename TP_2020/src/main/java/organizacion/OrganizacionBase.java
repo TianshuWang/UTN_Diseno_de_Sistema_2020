@@ -1,33 +1,52 @@
 package organizacion;
 
 import direccion_moneda.DireccionPostal;
-import exceptions.OrganizacionException;
-import organizacion.organizacionJuridicaBuilder.OrganizacionJuridica;
+import organizacion.organizacionJuridica.OrganizacionJuridica;
+import organizacion.organizacionJuridica.TipoOrganizacionJuridica;
 
-import java.util.List;
+import javax.persistence.*;
 
-public class OrganizacionBase implements TipoDeOrganizacion{
-    protected String nombre;
+@Entity
+@DiscriminatorValue("organizacionBase")
+public class OrganizacionBase extends Organizacion{
+    @Column(name = "descripcion")
     private String descripcion;
+
+    @ManyToOne
+    @JoinColumn(name = "organizacion_juridica_id", referencedColumnName = "id")
     private OrganizacionJuridica organizacionJuridica;
 
-    public OrganizacionBase(String nombre,String descripcion,OrganizacionJuridica organizacionJuridica) throws OrganizacionException {
-        this.nombre = nombre;
-        this.descripcion = descripcion;
-        this.organizacionJuridica = organizacionJuridica;
-        if(this.organizacionJuridica == null){
-            throw new OrganizacionException();
-        }
-        organizacionJuridica.cargarBase(this);
-    }
+    private OrganizacionBase(){
 
-    //getters
-    public String getNombre() {
-        return nombre;
     }
 
     @Override
-    public List<OrganizacionBase> getBasesList() {
+    public DireccionPostal getDireccionPostal() {
+        return null;
+    }
+
+    @Override
+    public String getTipo() {
+        return "Base";
+    }
+
+    @Override
+    public String getRazonSocial() {
+        return null;
+    }
+
+    @Override
+    public String getCuit() {
+        return null;
+    }
+
+    @Override
+    public String getSector() {
+        return null;
+    }
+
+    @Override
+    public String getMision() {
         return null;
     }
 
@@ -37,7 +56,31 @@ public class OrganizacionBase implements TipoDeOrganizacion{
     }
 
     @Override
-    public DireccionPostal getDireccionPostal() {
-        return this.organizacionJuridica.getDireccionPostal();
+    public OrganizacionJuridica getOrganizacionJuridica() {
+        return this.organizacionJuridica;
+    }
+
+    @Override
+    public TipoOrganizacionJuridica getTipoOrganizacionJuridica() {
+        return null;
+    }
+
+    public OrganizacionBase(OrganizacionJuridica organizacionJuridica,String nombre) {
+        super();
+        this.organizacionJuridica = organizacionJuridica;
+        organizacionJuridica.cargarBase(this);
+        this.nombre = nombre;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+
+    public void setOrganizacionJuridica(OrganizacionJuridica organizacionJuridica) {
+        this.organizacionJuridica = organizacionJuridica;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
     }
 }

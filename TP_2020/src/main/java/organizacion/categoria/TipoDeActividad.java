@@ -1,7 +1,7 @@
 package organizacion.categoria;
 
-import organizacion.organizacionJuridicaBuilder.Empresa;
+import organizacion.organizacionJuridica.Empresa;
 
-public interface TipoDeActividad {
-    void calcularCategoria(Empresa empresa, Sector sector);
+public interface TipoDeActividad{
+    public void calcularCategoria(Empresa empresa, Sector sector);
 }

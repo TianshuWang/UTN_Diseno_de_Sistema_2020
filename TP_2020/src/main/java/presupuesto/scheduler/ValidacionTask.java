@@ -1,36 +1,53 @@
 package presupuesto.scheduler;
-import exceptions.UserException;
+import egreso.Egreso;
+import mensaje.mensaje.Mensaje;
 import organizacion.Organizacion;
-import persistencia.Repositorio;
 import presupuesto.validator.ValidatorDeTransparencia;
+import repositorio.FactoryRepositorio;
+import repositorio.Repositorio;
+import repositorio.entitymanager.EntityManagerHelper;
 import usuario.usuario.Usuario;
-import usuario.usuario.UsuarioFactory;
-
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.TimerTask;
+import java.util.stream.Collectors;
 
 public class ValidacionTask extends TimerTask {
-    private List<Usuario> users;
+    private static Repositorio<Usuario> repoUsuario = FactoryRepositorio.get(Usuario.class);
+    private static Repositorio<Egreso> repoEgreso = FactoryRepositorio.get(Egreso.class);
+    private static Repositorio<Mensaje> repoMensaje = FactoryRepositorio.get(Mensaje.class);
     private Organizacion organizacion;
 
-    public ValidacionTask(Organizacion organizacion) throws FileNotFoundException {
-        users = new ArrayList<>();
-        users = UsuarioFactory.getRepositorio().filtrar(organizacion.getNombre());
+    public ValidacionTask(Organizacion organizacion){
         this.organizacion = organizacion;
     }
 
     @Override
     public void run() {
         try {
-            System.out.println("\033[32;4m"+"Scheduler De Validator De Transparencia Para Los Usuarios De La Organizacion:"+organizacion.getNombre()+"\033[0m");
-            for(Usuario u:users){
-                new ValidatorDeTransparencia().generarResultadoDeValidacion(u);
+            List<Egreso> noValidados = repoEgreso.buscarTodos().stream()
+                    .filter(e->e.getUsuario() != null && e.getValidado() == false
+                            && e.getUsuario().getOrganizacion().getId() == organizacion.getId() &&
+                            e.getPresupuestosRequeridos().isEmpty() == false)
+                    .collect(Collectors.toList());
+            for(Egreso e:noValidados) {
+                Mensaje resultado = new ValidatorDeTransparencia().generarResultadoDeValidacion(e);
+                List<Usuario> revisores = repoUsuario.buscarTodos().stream()
+                        .filter(u->u.getisRevisor() && u.getOrganizacion().getId() == organizacion.getId())
+                        .collect(Collectors.toList());
+
+                Iterator<Usuario> revisoresIt = revisores.iterator();
+                while(revisoresIt.hasNext()) {
+                    Usuario r = revisoresIt.next();
+                    repoMensaje.agregar(resultado);
+                    r.getBandejaValidacion().agregarMensaje(resultado);
+                    repoUsuario.modificar(r);
+                }
+                EntityManagerHelper.closeEntityManager();
             }
-        } catch (UserException | FileNotFoundException e) {
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
     }
-
 }

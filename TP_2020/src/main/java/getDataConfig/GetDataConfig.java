@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Properties;
 
-public interface GetDataConfig {
+public class GetDataConfig {
     public static String getPath(){
         return System.getProperty("user.dir") + "\\config.properties";
     }

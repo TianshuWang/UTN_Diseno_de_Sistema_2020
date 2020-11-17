@@ -1,41 +1,38 @@
 package usuario.usuario;
 
-import persistencia.Repositorio;
+import repositorio.DAOHibernate;
+import repositorio.Repositorio;
+import repositorio.entitymanager.EntityManagerHelper;
 import usuario.password.PasswordLifeTimeValidator;
 import exceptions.*;
 
 import java.io.FileNotFoundException;
 
 public class UserValidator {
-    private static UserValidator instancia = null;
+    private static Repositorio<Usuario> repositorioUsuario;
 
-    private UserValidator(){
+    static {
+        repositorioUsuario = new Repositorio(new DAOHibernate<>(Usuario.class));
     }
 
-    public static UserValidator getInstancia(){
-        if(instancia == null){
-            instancia = new UserValidator();
-        }
-        return instancia;
-    }
-
-    public void checkUsername(String username) throws UserException {
-        if(UsuarioFactory.getRepositorio().existe(username)){
-            throw new UserException(username," Already Exist");
+    public static void checkUsername(String username) throws TransactionException {
+        if(repositorioUsuario.buscar(username) != null){
+            throw new TransactionException(BusinessError.USER_EXISTED);
         }
     }
 
-    public void checkCredential(String username, String password) throws UserException, FileNotFoundException, PassawordException, PasswordExpired {
-        if(!UsuarioFactory.getRepositorio().existe(username)){
-            throw new UserException(username," Dose Not Exists");
+    public static void checkCredential(String username, String password) throws TransactionException {
+        Usuario aux = repositorioUsuario.buscar(username);
+        if(aux == null){
+            throw new TransactionException(BusinessError.USER_NOT_MATCH);
         }
-        Usuario aux = UsuarioFactory.getRepositorio().buscar(username);
+
         checkPassword(aux,password);
     }
 
-    public void checkPassword(Usuario user, String password) throws FileNotFoundException, PassawordException, PasswordExpired {
+    public static void checkPassword(Usuario user, String password) throws TransactionException {
         if(!user.getPassword().getContent().equals(password)){
-            throw new PassawordException("Password Entered Incorrectly");
+            throw new TransactionException(BusinessError.PASSWORD_NOT_MATCH);
         }
         new PasswordLifeTimeValidator().checkPasswordLastUpdate(user.getPassword());
     }

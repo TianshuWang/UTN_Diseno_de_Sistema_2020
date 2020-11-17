@@ -13,7 +13,7 @@ public class ProhibitionValidator implements Validator {
         return "^(?<!"+patternTildeLetter+")(?=\\S+$)$";
     }
 
-    public void validatePassword(String password) throws PassawordException {
+    public void validatePassword(String password) throws TransactionException {
         Pattern ptn = Pattern.compile(pattern());
         Matcher mtr = ptn.matcher(password);
         if(!mtr.matches()) {
@@ -21,17 +21,17 @@ public class ProhibitionValidator implements Validator {
         }
     }
 
-    private void whatFailed(String password) throws PassawordException {
+    private void whatFailed(String password) throws TransactionException {
         Pattern ptn = Pattern.compile(patternTildeLetter);
         Matcher mtr = ptn.matcher(password);
         hasNoTildeLetter = !mtr.find();
         if(hasNoTildeLetter == false) {
-            throw new PassawordException("Tilde Letter Found");
+            throw new TransactionException(BusinessError.PASSWORD_EXCEPTION,"Contraseña No debe tener:ü é á í ó ú ñ Ñ");
         }
 
         hasNoWhiteSpace = !(password.contains(" "));
         if(hasNoWhiteSpace == false) {
-            throw new PassawordException("White Space Found");
+            throw new TransactionException(BusinessError.PASSWORD_EXCEPTION,"Contraseña No debe tener Espacio");
         }
     }
 }

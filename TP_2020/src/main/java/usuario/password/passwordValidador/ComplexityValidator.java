@@ -29,7 +29,7 @@ public class ComplexityValidator implements Validator {
         patternSpecialCharacter = GetDataConfig.getValue("patternSpecialCharacter");
     }
 
-    public void validatePassword(String password) throws FileNotFoundException, PassawordException {
+    public void validatePassword(String password) throws FileNotFoundException, TransactionException {
         this.getPatternsData();
         Pattern ptn = Pattern.compile(pattern());
         Matcher mtr = ptn.matcher(password);
@@ -39,33 +39,33 @@ public class ComplexityValidator implements Validator {
         }
     }
 
-    private void whatFailed(String password) throws PassawordException {
+    private void whatFailed(String password) throws TransactionException {
         Pattern ptn = Pattern.compile(patternLowerCase);
         Matcher mtr = ptn.matcher(password);
         hasLowercaseLetter = mtr.find();
         if (hasLowercaseLetter == false) {
-            throw new PassawordException("Lowercase Letter Not Found");
+            throw new TransactionException(BusinessError.PASSWORD_EXCEPTION,"No Se Encuentran Letras Minúsculas");
         }
 
         ptn = Pattern.compile(patternUpperCase);
         mtr = ptn.matcher(password);
         hasUppercaseLetter = mtr.find();
         if (hasUppercaseLetter == false) {
-            throw new PassawordException("Uppercase Letter Not Found");
+            throw new TransactionException(BusinessError.PASSWORD_EXCEPTION,"No Se Encuentran Letras Mayúsculas");
         }
 
         ptn = Pattern.compile(patternNumberCase);
         mtr = ptn.matcher(password);
         hasNumber = mtr.find();
         if (hasNumber == false) {
-            throw new PassawordException("Number Not Found");
+            throw new TransactionException(BusinessError.PASSWORD_EXCEPTION,"No Se Encuentran Números");
         }
 
         ptn = Pattern.compile(patternSpecialCharacter);
         mtr = ptn.matcher(password);
         hasSpecialCharacter = mtr.find();
         if (hasSpecialCharacter == false) {
-            throw new PassawordException("Special Character Not Found");
+            throw new TransactionException(BusinessError.PASSWORD_EXCEPTION,"No Se Encuentran Caracteres: @ $ _");
         }
     }
 

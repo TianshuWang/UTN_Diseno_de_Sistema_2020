@@ -1,135 +1,113 @@
 package usuario.usuario;
-import bandejaDeMensaje.BandejaDeMensaje;
-import bandejaDeMensaje.DAOMemoriaBandeja;
-import bandejaDeMensaje.criterioFiltracion.CriterioFiltracion;
-import bandejaDeMensaje.mensaje.MostradorMensaje;
-import direccion_moneda.mercadolibre_api.services.ServicioMercadolibre;
-import egreso.egreso.builder.ExcepcionDeCreacionDeEgreso;
-import ingreso.IngresoFactory;
-import ingreso.Ingreso;
-import ingreso.ItemIngreso;
-import organizacion.criterio.CriterioClasificacion;
-import organizacion.criterio.CategoriaClasificacion;
-import egreso.egreso.*;
-import exceptions.*;
-import presupuesto.*;
+import mensaje.mensaje.BandejaMensaje;
+import mensaje.mensaje.Mensaje;
 import usuario.password.Password;
-import egreso.*;
-import egreso.documento.Documento;
-import egreso.proveedor.Proveedor;
 import organizacion.*;
 
-import java.io.IOException;
-import java.time.LocalDate;
-import java.util.*;
+import javax.persistence.*;
 
+@Entity
+@Table(name = "usuario")
 public class Usuario {
+    @Id
     private String username;
+
+    @Column(name = "nombre")
+    private String nombre;
+
+    @Column(name = "apellido")
+    private String apellido;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "password_id")
     private Password password;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "organizacion_id")
     private Organizacion organizacion;
-    private Rol rol;
-    private List<Egreso> egresoList;
-    private List<Ingreso> ingresoList;
-    private BandejaDeMensaje bandejaValidacion;
 
-    public Usuario(String username, String password, Organizacion organizacion, Rol rol){
-        this.username = username;
-        this.password = new Password(password);
-        this.organizacion = organizacion;
-        this.rol = rol;
-        this.egresoList = new ArrayList<>();
-        this.ingresoList = new ArrayList<>();
-        this.bandejaValidacion = new BandejaDeMensaje(new DAOMemoriaBandeja());
+    @Column(name = "administrador")
+    
+    private Boolean isAdm;
+
+    @Column(name = "revisor")
+    
+    private Boolean isRevisor;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "bandeja_validacion_id")
+    private BandejaMensaje bandejaValidacion;
+
+    private Usuario(){
+
     }
 
-    public Usuario crearUsuario(String username, String password, Organizacion organizacion, Rol rol) throws UserException, IOException, RolException,PassawordException {
-        return rol.crearUsuario(username,password,organizacion,rol);
+    public Usuario(Builder builder){
+        this.username = builder.username;
+        this.password = builder.password;
+        this.isAdm = builder.isAdm;
+        this.isRevisor = builder.isRevosor;
+        this.organizacion = builder.organizacion;
+        this.bandejaValidacion = new BandejaMensaje(this);
+        this.nombre = builder.nombre;
+        this.apellido = builder.apellido;
     }
 
-    public Egreso cargarEgreso(Proveedor proveedor, MedioDePago medioDePago, LocalDate fechaDeOperacion, Documento documento, ItemEgreso... itemEgresos) throws IOException, DocumentException, ExcepcionDeCreacionDeEgreso {
-        Egreso egresoNuevo = EgresoFactory.crearEgreso(organizacion,proveedor,medioDePago,fechaDeOperacion,documento,itemEgresos);
-        egresoList.add(egresoNuevo);
-        egresoNuevo.getRevisores().add(this);
-        return egresoNuevo;
-    }
+    public static class Builder{
+        private String username;
+        private Password password;
+        private boolean isAdm;
+        private boolean isRevosor;
+        private Organizacion organizacion;
+        private String nombre;
+        private String apellido;
 
-    public Presupuesto cargarPresupuesto(Egreso egreso, ItemPresupuesto ...items) throws IOException, EgresoException {
-        if(GetCantidadPresupuestos.getCantidad() == 0){
-            throw new EgresoException();
+        public Builder agregarNombre(String nombre){
+            this.nombre = nombre;
+            return this;
         }
-        Presupuesto presupuesto = PresupuestoFactory.crearPresupuesto(egreso,items);
-        egreso.getPresupuestosRequeridos().add(presupuesto);
-        indicarPresupuestoSeleccionado(egreso);
-        return presupuesto;
-    }
 
-    private void indicarPresupuestoSeleccionado(Egreso egreso){
-        Presupuesto seleccionado = egreso.getCriterioSeleccion().seleccionarPresupuesto(egreso);
-        egreso.setPresupuestoSeleccionado(seleccionado);
-    }
-
-    public void verResultadosDeValidacionesPorFiltracion(Usuario user, CriterioFiltracion criterioFiltracion) throws RolException {
-        if(!esRevisorDe(user)){
-            throw new RolException(user);
+        public Builder agregarApellido(String apellido){
+            this.apellido = apellido;
+            return this;
         }
-        user.getBandejaValidacion().filtrar(criterioFiltracion).forEach(m-> MostradorMensaje.mostrar(m));
-    }
 
-    private boolean esRevisorDe(Usuario user){
-        return user.getEgresoList().stream().anyMatch(e->e.getRevisores().contains(this));
-    }
-
-    public Ingreso cargarIngreso(String descripcion, LocalDate fechaDeOperacion, ItemIngreso ...itemsIngreso) throws IOException{
-        Ingreso ingresoNuevo = IngresoFactory.crearIngreso(this.organizacion,descripcion,fechaDeOperacion,itemsIngreso);
-        ingresoList.add(ingresoNuevo);
-        return ingresoNuevo;
-    }
-
-    public CriterioClasificacion crearCriterioClasificacion(String descripcion){
-        return organizacion.crearCriterioClasificacion(descripcion);
-    }
-
-    public CategoriaClasificacion crearCategoriaClasificacion(String descripcion, CriterioClasificacion criterio) throws CriterioException {
-        return organizacion.crearCategoriaClasificacion(descripcion,criterio);
-    }
-
-    public void otorgarJerarquiaAcriterios(CriterioClasificacion padre, CriterioClasificacion hijo) throws RolException, CriterioException {
-        if(!padre.getOrganizacion().equals(organizacion) || !hijo.getOrganizacion().equals(organizacion)){
-            throw new CriterioException();
+        public Builder agregarUsername(String username){
+            this.username = username;
+            return this;
         }
-        rol.otorgarJerarquiaAcriterios(padre,hijo);
+
+        public Builder agregarPassword(Password password){
+            this.password = password;
+            return this;
+        }
+
+        public Builder agregarIsAdm(boolean isAdm){
+            this.isAdm = isAdm;
+            return this;
+        }
+
+        public Builder agregarIsRevisor(boolean isResivor){
+            this.isRevosor = isResivor;
+            return this;
+        }
+
+        public Builder agregarOrganizacion(Organizacion organizacion){
+            this.organizacion = organizacion;
+            return this;
+        }
+
+        public Usuario build(){
+            return new Usuario(this);
+        }
     }
 
-    public void asociarCategoriaClasificacionEgreso(Egreso egreso,CategoriaClasificacion ...categorias) throws EgresoException{
-        if(!egreso.getOrganizacion().equals(organizacion)){
-            throw new EgresoException(organizacion);
-        }
-        egreso.agregarCategoriasClasificacion(categorias);
+    public void recibirMensaje(Mensaje mensaje){
+        this.bandejaValidacion.agregarMensaje(mensaje);
     }
 
-    public void asociarCategoriaClasificacionPresupuesto(Presupuesto presupuesto,CategoriaClasificacion ...categoria) throws PresupuestoException {
-        if(!presupuesto.getEgreso().getOrganizacion().equals(organizacion)){
-            throw new PresupuestoException("Presupuesto No Existe De Un Egreso En La Organizacion");
-        }
-        presupuesto.agregarCategoriasClasificacion(categoria);
-    }
-
-    public void asociarEgresoIngreso(Egreso egreso, Ingreso ingreso) throws EgresoException, IngresoException {
-        if(!egreso.getOrganizacion().equals(organizacion)){
-            throw new EgresoException(organizacion);
-        }
-        if(!ingreso.getOrganizacion().equals(organizacion)){
-            throw new IngresoException("Ingreso No Existe En La Organizacion");
-        }
-        egreso.setIngresoAsociado(ingreso);
-    }
-
-    //getters
+    //getters and setters
     public String getUsername() {
-        return username;
-    }
-
-    public String getIdentificador() {
         return username;
     }
 
@@ -141,11 +119,65 @@ public class Usuario {
         return organizacion;
     }
 
-    public List<Egreso> getEgresoList() {
-        return egresoList;
-    }
-
-    public BandejaDeMensaje getBandejaValidacion() {
+    public BandejaMensaje getBandejaValidacion() {
         return bandejaValidacion;
     }
+
+    public boolean getisAdm() {
+        return isAdm;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setPassword(Password password){
+        this.password = password;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public void setApellido(String apellido) {
+        this.apellido = apellido;
+    }
+
+    public void setOrganizacion(Organizacion organizacion) {
+        this.organizacion = organizacion;
+    }
+
+    public void setAdm(Boolean adm) {
+        isAdm = adm;
+    }
+
+    public void setRevisor(Boolean revisor) {
+        isRevisor = revisor;
+    }
+
+    public void setBandejaValidacion(BandejaMensaje bandejaValidacion) {
+        this.bandejaValidacion = bandejaValidacion;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public String getApellido() {
+        return apellido;
+    }
+
+    public boolean getisRevisor() {
+        return isRevisor;
+    }
+
+    public Boolean getAdm() {
+        return isAdm;
+    }
+
+    public Boolean getRevisor() {
+        return isRevisor;
+    }
+
+
 }

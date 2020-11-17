@@ -1,10 +1,17 @@
 package organizacion.categoria;
 
+import javax.persistence.*;
+
 public class Categoria {
+    private int id;
     private String nombreCategoria;
     private Long montoMaximo;
     private Integer maxCantidadPersonal;
     private int peso;
+
+    private Categoria(){
+
+    }
 
     public Categoria(String nombre, Long montoMax, Integer maxCantPersonal, int peso) {
         this.nombreCategoria = nombre;

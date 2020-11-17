@@ -1,7 +1,7 @@
 package presupuesto.validator.validacion;
 
 import egreso.ItemEgreso;
-import egreso.egreso.Egreso;
+import egreso.Egreso;
 import presupuesto.ItemPresupuesto;
 import presupuesto.Presupuesto;
 
@@ -18,27 +18,27 @@ public class PresupuestoPresenteEnCompra implements ValidacionTransparencia {
         return egreso.getPresupuestosRequeridos().stream().anyMatch(p->verificarItems(egreso,p));
     }
 
+    private Boolean verificarItem(ItemEgreso itemEgreso,ItemPresupuesto itemPresupuesto){
+        return itemEgreso.getCantidad() == itemPresupuesto.getCantidad() &&
+                itemEgreso.getProductoServicio().getNombre() == itemPresupuesto.getProductoServicio().getNombre();
+    }
+
     private Boolean verificarItems(Egreso egreso,Presupuesto presupuesto){
         List<ItemPresupuesto> auxP = presupuesto.getItemPresupuestoList();
-        List<ItemEgreso> auxC = new ArrayList<>();
-        egreso.getItemEgresos().forEach(i->auxC.add(i));
+        List<ItemEgreso> auxE = new ArrayList<>();
+        egreso.getItemEgresos().forEach(i->auxE.add(i));
 
-        if(auxC.size() != auxP.size()){
+        if(auxE.size() != auxP.size()){
             return false;
         }
-        else{
-            for(ItemPresupuesto p:auxP){
-                ItemEgreso aux = auxC.stream().filter(c->c.getCantidad()==p.getCantidad() && c.getProductoServicio().getNombre()==p.getProductoServicio().getNombre())
-                                              .findAny().orElse(null);
 
-                if(aux != null){
-                    p.setEgreso(egreso);//asociar el itemPresupuesto a la compra
-                    auxC.remove(aux);
-                }
-                else{
-                    return false;
-                }
+        for(ItemPresupuesto ip:auxP) {
+            ItemEgreso auxIe = auxE.stream().filter(ie -> verificarItem(ie, ip)).findAny().orElse(null);
+
+            if (auxIe == null) {
+                return false;
             }
+            auxE.remove(auxIe);
         }
         return true;
     }

@@ -1,15 +1,24 @@
 package organizacion.categoria;
 
-import organizacion.organizacionJuridicaBuilder.Empresa;
+import organizacion.organizacionJuridica.Empresa;
 
+import javax.persistence.Persistence;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public interface CalculoCategoriaAFIP {
-    static List<Sector> sectores = new ArrayList<>(Arrays.asList(new Sector("Construccion"),new Sector("Comercio"),new Sector("Servicios"),new Sector("Agropecuario"),new Sector("IndustriaYmineria")));
+public class CalculoCategoriaAFIP {
+    private static List<Sector> sectores;
+
+    static {
+        try {
+            sectores = new ArrayList<>(Arrays.asList(new Sector("Construccion"),new Sector("Comercio"),new Sector("Servicios"),new Sector("Agropecuario"),new Sector("IndustriaYmineria")));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     public static void calcularCategoria(Empresa unaEmpresa) throws FileNotFoundException {
         Sector sector = sectores.stream().filter(s -> s.getNombreSector().equalsIgnoreCase(unaEmpresa.getSector())).findAny().orElse(null);

@@ -1,6 +1,6 @@
 package direccion_moneda.mercadolibre_api.services;
 
-import direccion_moneda.mercadolibre_api.molde.*;
+import direccion_moneda.mercadolibre_api.model.*;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
@@ -40,14 +40,6 @@ public class ServicioMercadolibre {
         Response<Moneda> responseMoneda = requestMoneda.execute();
         Moneda moneda = responseMoneda.body();
         return moneda;
-    }
-
-    public Ratio ratio(String id1, String id2) throws IOException {
-        MercadolibreService mercadolibreService = this.retrofit.create(MercadolibreService.class);
-        Call<Ratio> requestRatio = mercadolibreService.ratio(id1,id2);
-        Response<Ratio> responseRatio = requestRatio.execute();
-        Ratio ratio = responseRatio.body();
-        return ratio;
     }
 
     public Pais pais(String id) throws IOException {

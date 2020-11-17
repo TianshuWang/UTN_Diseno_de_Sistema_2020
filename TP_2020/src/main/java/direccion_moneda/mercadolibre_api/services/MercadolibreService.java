@@ -1,12 +1,11 @@
 package direccion_moneda.mercadolibre_api.services;
 
-import direccion_moneda.mercadolibre_api.molde.*;
+import direccion_moneda.mercadolibre_api.model.*;
 import retrofit2.Call;
-import retrofit2.http.GET;
-import retrofit2.http.Path;
-import retrofit2.http.Query;
+import retrofit2.http.*;
 
 public interface MercadolibreService {
+
     @GET("countries")
     Call<Pais[]> paises();
 
@@ -21,7 +20,4 @@ public interface MercadolibreService {
 
     @GET("currencies/{id}")
     Call<Moneda> moneda(@Path("id") String id);
-
-    @GET("currency_conversions/search")
-    Call<Ratio> ratio(@Query("from") String id1, @Query("to") String id2);
 }

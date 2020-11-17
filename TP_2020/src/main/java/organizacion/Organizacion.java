@@ -1,32 +1,42 @@
 package organizacion;
-import exceptions.CriterioException;
-import organizacion.criterio.AdministradorCriterios;
-import organizacion.criterio.CriterioClasificacion;
-import organizacion.criterio.CategoriaClasificacion;
+import direccion_moneda.DireccionPostal;
+import entityPersistente.EntidadPersistente;
+import organizacion.organizacionJuridica.OrganizacionJuridica;
+import organizacion.organizacionJuridica.TipoOrganizacionJuridica;
 
-public class Organizacion {
-    private TipoDeOrganizacion tipoDeOrganizacion;//empresa OSC base
-    private AdministradorCriterios administradorCriterios;
+import javax.persistence.*;
 
-    public Organizacion(TipoDeOrganizacion tipoDeOrganizacion){
-        this.tipoDeOrganizacion = tipoDeOrganizacion;
-        administradorCriterios = new AdministradorCriterios(this);
+@Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "tipo")
+public abstract class Organizacion extends EntidadPersistente {
+    @Column(name = "nombre")
+    protected String nombre;
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 
-    public CriterioClasificacion crearCriterioClasificacion(String descripcion){
-        return administradorCriterios.crearCriterio(descripcion,this);
+    public String getNombre() {
+        return nombre;
     }
 
-    public CategoriaClasificacion crearCategoriaClasificacion(String descripcion, CriterioClasificacion criterio) throws CriterioException {
-        return administradorCriterios.crearCategoria(descripcion,criterio);
-    }
+    public abstract DireccionPostal getDireccionPostal();
 
-    //getters
-    public String getNombre(){
-        return tipoDeOrganizacion.getNombre();
-    }
+    public abstract String getTipo();
 
-    public TipoDeOrganizacion getTipoDeOrganizacion() {
-        return tipoDeOrganizacion;
-    }
+    public abstract String getRazonSocial();
+
+    public abstract String getCuit();
+
+    public abstract String getSector();
+
+    public abstract String getMision();
+
+    public abstract String getCategoria();
+
+    public abstract OrganizacionJuridica getOrganizacionJuridica();
+
+    public abstract TipoOrganizacionJuridica getTipoOrganizacionJuridica();
+
 }

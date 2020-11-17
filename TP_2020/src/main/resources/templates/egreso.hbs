@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html style="height: 100%;">
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+
+    <link rel="stylesheet" href="resources/css/presupuesto.css" type="text/css">
+
+    <title>Egreso</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+        integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="http://static.runoob.com/assets/jquery-validation-1.14.0/dist/jquery.validate.min.js"></script>
+
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js"
+        integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ"
+        crossorigin="anonymous"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js"
+        integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY"
+        crossorigin="anonymous"></script>
+</head>
+
+<body style="font-family:verdana;background-color:#FFFAF0;">
+
+
+    <!-- SIDEBAR -->
+    <div class="sidenav">
+        <span onclick="window.location.replace('/menu')">Home</span> <br>
+        {{#if isAdm}}
+        <span onclick="window.location.replace('/usuarios')">Usuario</span> <br>
+        {{else}}
+        <span onclick="window.location.replace('/egresos')">Egreso</span> <br>
+        <span onclick="window.location.replace('/presupuestos')">Presupuesto</span> <br>
+        <span onclick="window.location.replace('/ingresos')">Ingreso</span> <br>
+        <span onclick="window.location.replace('/asociar')">Asociar Egreso e Ingreso</span> <br>
+        <span onclick="window.location.replace('/criterios')">Criterio y Categoria</span> <br>
+        {{/if}}
+        <span onclick="window.location.replace('/mensajes')">Mensaje</span> <br>
+        <span data-toggle="modal" data-target="#perfil_modal">Perfil</span> <br>
+        <span data-toggle="modal" data-target="#salir">Salir</span> <br>
+    </div>
+
+
+    <div class="main">
+        <!-- HEADER -->
+        <nav class="navbar justify-content-center" id="header">
+            <img id="menu" src="images/menu.png" height="30px" width="30px" style="filter: invert(100%);"
+                class="alingleft">
+            &nbsp;
+            <a class="navbar-brand" href="/menu">GESOC</a>
+        </nav>
+
+        <!-- CONTENT PRESUPUESTO -->
+        <div class="container">
+
+            <!-- PERFIL -->
+            <div class="modal fade" id="perfil_modal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" id="exampleModalLabel">Datos del perfil</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <h5>Usuario: {{usuario.username}}</h5> <br>
+                            <h5>Nombre: {{usuario.apellido}}</h5> <br>
+                            <h5>Apllido: {{usuario.nombre}}</h5> <br>
+                            <h5>Rol: {{rol}}</h5> <br>
+                            <h5>Organización: {{usuario.organizacion.nombre}}</h5> <br>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <h4 style="text-align:center;">
+                <i class="fas fa-file"></i>
+                Egreso
+            </h4>
+            <hr> <br>
+
+
+            <div id="egreso">
+
+                <form id="egreso_form" name="egreso-form" method="post" action="/egreso" enctype="multipart/form-data">
+
+                    <div class="form-row">
+                        <div class="col-md-4 mb-4">
+                            <label for="proveedor">Proveedor</label>
+                            <button class="btn btn-primary btn-sm" onclick="window.location.href='/proveedor'"
+                                data-toggle="tooltip" data-placement="right"
+                                title="Si el proveedor no está en el listado, por favor hace click a 'Nuevo Proveedor' para cargarlo.'">
+                                Nuevo Proveedor</button><br>
+                            <!-- <span id="egreso_help">Elija el proveedor que desea vincular</span> -->
+                            <select class="custom-select" id="proveedor" name="proveedor" required>
+                                {{#each proveedores}}
+                                <option name="proveedorNombre" value="{{this.id}}">{{this.nombre}} - {{this.cuit}}
+                                </option>
+                                {{/each}}
+                            </select>
+                        </div>
+
+                        <div class="col-md-3 mb-3">
+                            <label for="fecha_operacion">Fecha de Operación</label>
+                            <input type="date" name="fecha-operacion" class="form-control" id="fecha_operacion"
+                                required>
+                        </div>
+                    </div>
+                    <hr>
+
+                    <div class="form-row">
+                        <div class="col-md-3 mb-3">
+                            <label for="mondea">Moneda</label>
+                            <select class="custom-select" id="moneda_presupuesto" name="moneda" required>
+                                {{#each monedas}}
+                                <option name="moneda" value="{{this.id}}">{{this.id}}</option>
+                                {{/each}}
+                            </select>
+                        </div>
+                    </div>
+                    <hr>
+
+                    <h5>Medio de pago</h5>
+                    <div class="form-row">
+                        <div class="col-md-2 mb-2">
+                            <label for="tipo_pago">Tipo</label> <br>
+                            <select class="custom-select" id="tipo_pago" name="tipo-pago" required
+                                onchange="toggleMedio(this)">
+                                <option name="egresoId" value="efectivo"> Efectivo</option>
+                                <option name="egresoId" value="credito" selected>Tarjeta de Crédito</option>
+                                <option name="egresoId" value="debito">Tarjeta de Debito</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-3 mb-3" id="nombre-tarjeta">
+                            <label for="nombre_tarjeta">Nombre Tarjeta</label>
+                            <input type="text" name="nombre-tarjeta" class="form-control" id="nombre_tarjeta" required>
+                        </div>
+                        <div class="col-md-3 mb-3" id="numero-tarjeta">
+                            <label for="numero_tarjeta">Numero Tarjeta</label>
+                            <input type="text" name="numero-tarjeta" class="form-control" id="numero_tarjeta" required>
+                        </div>
+                    </div>
+                    <hr>
+
+
+                    <div class="form-row">
+                        <div class="col-md-3 mb-3">
+                            <label for="documentacion">Documentación</label>
+                            <select class="custom-select" id="documentacion" name="tipo-documentacion" required
+                                onchange="toggleFile(this)">
+                                <option value="fisica">Física</option>
+                                <option value="link">Link</option>
+                                <option value="ninguna" selected>Ninguna</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3 mb-3" id="insertar_link" style="display: none">
+                            <label for="link_doc">Link</label>
+                            <input type="text" name="link" class="form-control" id="link_doc">
+                        </div>
+                        <div class="input-group mb-3" id="insertar_doc" style="display: none">
+                            <div class="col">
+                                <label class="custom-file-label" for="file_doc">Subir archivo</label>
+                                <input type="file" name="archivo" class="custom-file-input" id="file_doc">
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <div class="form-check">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" type="checkbox" id="req-presupuesto"
+                                        name="requiere-presupuesto" value="on">
+                                    Requiere Presupuesto
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <div class="form-row">
+                        <p>Items</p>
+                        <table class="table table-striped" id="items_table">
+                            <thead>
+                                <th></th>
+                                <th scope="col">Nombre</th>
+                                <th scope="col">Descripción</th>
+                                <th scope="col">Producto/Servicio</th>
+                                <th scope="col">Precio Unitario</th>
+                                <th scope="col">Cantidad</th>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><i class="fas fa-minus" id="del_row" onclick="del_row(this)"></i></td>
+                                    <td><input id="nombre" type="text" name="nombre" required></td>
+                                    <td><input id="descripcion" type="text" name="descripcion" required></td>
+                                    <!--<td><input type="text" size="10" required></td>-->
+                                    <td>
+                                        <select class="custom-select" id="tipo_producto" name="tipo-producto" required>
+                                            <option value="producto">Producto</option>
+                                            <option value="servicio">Servicio</option>
+                                        </select>
+                                    </td>
+                                    <td><input id="precio_unitario" type="number" step="0.01" name="precio-unitario" size="10"
+                                            required>
+                                    </td>
+                                    <td><input id="cantidad" type="number" name="cantidad" size="10" required>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <i class="fas fa-plus" id="add_row" onclick="add_row()"></i>
+                    </div> <br>
+                    <hr>
+                    <button class="btn btn-primary" type="submit" id="submit_form">Agregar Egreso</button>
+
+                    <td><input id="hidden-input" type="hidden" name="items" size="10"></td>
+                </form>
+
+            </div>
+
+        </div>
+        <div class=" modal fade" id="salir" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"
+            style="">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="exampleModalLabel">Cerrar Sesión</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        ¿Desea cerrar la sesión?
+                    </div>
+                    <div class="modal-footer">
+
+                        <button type="button" class="btn btn-primary"
+                            onclick="window.location.replace('/logout')">Salir</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class=" modal fade" id="alert" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"
+            style="">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="exampleModalLabel">Alert</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" id="alert-body">
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal" id="out">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
+        crossorigin="anonymous"></script>
+
+    <script type="text/javascript">
+        function isNumber(obj) {
+            return typeof obj === 'number' && !!isNumber(obj)
+        }
+        $(function () {
+            $("#egreso_form").submit(function (event) {
+                event.preventDefault();
+                var fd = new FormData();
+                fd.append("proveedor", $('#proveedor').val());
+                fd.append("fecha-operacion", $('#fecha_operacion').val());
+                fd.append("tipo-pago", $('#tipo_pago').val());
+                fd.append("tipo-documentacion", $('#documentacion').val());
+                fd.append("moneda", $('#moneda_presupuesto').val());
+                fd.append("link", $('#link_doc').val());
+                fd.append("archivo", $('#file_doc')[0].files[0]);
+                fd.append("requiere-presupuesto", $('#req-presupuesto').val())
+                fd.append("items", $('#hidden-input').val());
+
+                $.ajax({
+                    url: "/egreso",
+                    data: fd,
+                    type: "POST",
+                    processData: false,
+                    contentType: false,
+                    success: function (data) {
+                        $("#alert-body").html(data);
+                        $("#alert").modal({ 'show': true });
+                        $('#out').click(function () {
+                            location.reload(true);
+                        });
+                    },
+                    error: function (xhr, status, errorThrown) {
+                        $("#alert-body").html(xhr.responseText);
+                        $("#alert").modal({ 'show': true });
+                    }
+                });
+            });
+        });
+
+        $('#submit_form').click(function () {
+            var rows = [];
+            $("#items_table tr").each(function () {
+                if ($('td', this).length > 0) { // exclude header row
+                    var $td = $('td', this);
+                    var nombre = $td.eq(1).find('input').val();
+                    var descripcion = $td.eq(2).find('input').val();
+                    var tipoDeProducto = $td.eq(3).find('select').val();
+                    var precioUnit = $td.eq(4).find('input').val();
+                    var cantidad = $td.eq(5).find('input').val();
+
+                    rows.push(nombre);
+                    rows.push(descripcion);
+                    rows.push(tipoDeProducto);
+                    rows.push(precioUnit);
+                    rows.push(cantidad);
+                }
+            });
+            $('#hidden-input').val(rows.join(","));
+        });
+
+        var tr = '<tr>\
+                        <td><i class="fas fa-minus" id="del_row" onclick="del_row(this)"></i></td>\
+                        <td><input type="text" required></td>\
+                        <td><input type="text" required></td>\
+                        <td>\
+                            <select class="custom-select" id="tipo_producto" name="tipo-producto" required>\
+                                <option value="producto">Producto</option>\
+                                <option value="servicio">Servicio</option>\
+                            </select>\
+                        </td>\
+                        <td><input id="precio_unitario" type="number" step="0.01" size="10" required></td>\
+                        <td><input id="cantidad" type="number"  size="10" required></td>\
+                    </tr>';
+        function add_row() {
+            $("#items_table tbody").append(tr);
+        };
+        function del_row(row) {
+            var i = row.parentNode.parentNode.rowIndex;
+            document.getElementsByTagName("tr")[i].remove();
+        };
+        function toggleFile(opt) {
+            var opt_file = opt.value;
+            if (opt_file == "link") {
+                $("#insertar_link").show();
+                $("#insertar_doc").hide();
+            } else if (opt_file == "fisica") {
+                $("#insertar_link").hide();
+                $("#insertar_doc").show();
+            } else {
+                $("#insertar_link").hide();
+                $("#insertar_doc").hide();
+            }
+        };
+        function toggleMedio(opt) {
+            var opt_medio = opt.value;
+            if (opt_medio == "efectivo") {
+                $("#nombre-tarjeta").hide();
+                document.getElementById("nombre_tarjeta").required = false;
+                $("#numero-tarjeta").hide();
+                document.getElementById("numero_tarjeta").required = false;
+            } else if (opt_medio == "debito") {
+                $("#nombre-tarjeta").show();
+                document.getElementById("nombre_tarjeta").required = true;
+                $("#numero-tarjeta").show();
+                document.getElementById("numero_tarjeta").required = true;
+            } else {
+                $("#nombre-tarjeta").show();
+                document.getElementById("numero_tarjeta").required = true;
+                $("#numero-tarjeta").show();
+                document.getElementById("numero_tarjeta").required = true;
+            }
+        };
+
+        $('#file_doc').on('change', function () {
+            //get the file name
+            var filePath = $(this).val();
+            var arr = filePath.split('\\');
+            var fileName = arr[arr.length - 1];
+            $('.custom-file-label').html(fileName);
+        })
+
+        $(document).ready(function () {
+            $("#menu").click(function () {
+                $(".sidenav").slideToggle("slow");
+            });
+        });
+
+        $(function () {
+            $('#numero_tarjeta').on('keyup', function (e) {
+                if ((e.which >= 48 && e.which <= 57) ||
+                    (e.which >= 96 && e.which <= 105)) {
+                    var caret = this.selectionStart;
+                    var value = this.value;
+                    var sp = (value.slice(0, caret).match(/\s/g) || []).length;
+                    var nospace = value.replace(/\s/g, '');
+                    var curVal = this.value = nospace.replace(/(\d{4})/g, "$1 ").trim();
+                    var curSp = (curVal.slice(0, caret).match(/\s/g) || []).length;
+                    this.selectionEnd = this.selectionStart = caret + curSp - sp;
+                }
+                else {
+                    $("#alert-body").html('Solo se permiten numeros.');
+                    $("#alert").modal({ 'show': true });
+                    this.value = this.value.replace(/[^\d\.]*/g, '');
+                }
+            })
+        })
+
+        $(function () { $("[data-toggle='tooltip']").tooltip(); });
+
+    </script>
+
+</body>
+
+
+</html>

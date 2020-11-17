@@ -1,12 +1,18 @@
 package organizacion.categoria;
 
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class Sector {
+    private int id;
     private String nombreSector;
     private List<Categoria> categorias;
+
+    private Sector(){
+
+    }
 
     public Sector(String nombre) {
         this.nombreSector = nombre;
