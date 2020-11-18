@@ -34,7 +34,7 @@ import usuario.usuario.*;
 
 import java.io.IOException;
 import java.time.LocalDate;
-
+/*
 public class Unit_Test {
     Repositorio<Usuario> repoUsuario = FactoryRepositorio.get(Usuario.class);
     Repositorio<Proveedor> repoProveedor = FactoryRepositorio.get(Proveedor.class);
@@ -50,13 +50,13 @@ public class Unit_Test {
     @Test
     public void test() throws IOException,ExcepcionDeCreacionDeDireccion, ExcepcionDeCreacionDeOrgnizacionBuilder, TransactionException {
         //ImportadorMercadoLibreApi.importarPaises();
-        TipoOrganizacionJuridica juridicaEmpresa = new Empresa(8,8000000, "Servicios", new Comisionista());
-        System.out.println(juridicaEmpresa.getCategoria());
+        //TipoOrganizacionJuridica juridicaEmpresa = new Empresa(8,8000000, "Servicios", new Comisionista());
+        //System.out.println(juridicaEmpresa.getCategoria());
         /*cargarUsuarioAdministrador();
         cargarProveedor();
         cargarEgreso();
         cargarPresupuesto();
-        cargarIngreso();*/
+        cargarIngreso();
     }
 
 
@@ -208,4 +208,4 @@ public class Unit_Test {
 
         repoIngreso.agregar(ingreso);
     }
-}
+}*/

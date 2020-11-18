@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <title>Menu</title>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.1.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/jquery.validate.min.js"></script>
+    <script src="https://cdn.staticfile.org/popper.js/1.12.5/umd/popper.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/4.1.0/js/bootstrap.min.js"></script>
+    <script>
+        $(function () {
+            $("#mensajes").click(function () {
+                var username = $(this).attr("username");
+                var url = "/bandejaMensajes?username=" + username;
+                $.ajax({
+                    url: url,
+                    success: function (result) {
+                        $("#contentBandeja").html(result);
+                    },
+                });
+            });
+        });
+    </script>
+    <style>
+        input[type=submit],
+        button,
+        #close {
+            background-color: rgba(2, 167, 240, 1);
+            color: white;
+            padding: 10px 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 330px;
+            margin: 0 auto;
+        }
+        input[type=submit]:hover,
+        #close:hover {
+            background-color: #00CCFF;
+        }
+        
+        
+        
+        #plantilla {
+            border-radius: 15px;
+            border: rgba(2, 167, 240, 1) solid 3px;
+            width: 480px;
+            margin: auto;
+            margin-top: 100px;
+            text-align: left;
+        }
+        #headerPerfil {
+            background-color: rgba(2, 167, 240, 1);
+            text-align: left;
+        }
+        .tamanoImgPerfil {
+            width: 10%;
+            margin: 5px;
+            margin-left: 10%;
+        }
+        .input-datos{
+            font-size:16px;
+            height: 25px;
+            border:0px;
+            width: 55%;
+            padding: 5px;
+            background-color: rgb(72, 73, 74);
+            background-color: white;
+            border-bottom:4px solid rgba(2, 167, 240, 1);
+            margin-right: 25px;
+        }
+        .elementoPerfil {
+            margin-left: 25px;
+        }
+        label{
+            display: inline-block;
+            width: 175px;
+            font-weight: 600;
+        }
+        
+        
+        
+        #perfil:hover,
+        #mensajes:hover,
+        #menuPrincipal:hover,
+        #salir:hover {
+            color: #00CCFF;
+            cursor: pointer;
+        }
+        #header {
+            border-radius: 8px;
+            background-color: rgba(2, 167, 240, 1);
+            text-align: center;
+            height: 15%;
+            color: white;
+        }
+        #footer {
+            color: white;
+            border-radius: 4px;
+            background-color: rgba(2, 167, 240, 1);
+            height: 5%;
+            text-align: center;
+        }
+        #menuPrincipal,
+        #perfil,
+        #mensajes,
+        #salir {
+            float: right;
+            padding: 5px;
+        }
+        .whiteOverlay {
+            display: none;
+            position: absolute;
+            top: 0%;
+            left: 0%;
+            width: 100%;
+            height: 750px;
+            background-color: white;
+            z-index: 1001;
+            -moz-opacity: 0.8;
+            opacity: .80;
+            filter: alpha(opacity=88);
+        }
+        #showPerfil {
+            display: none;
+            position: absolute;
+            top: 25%;
+            left: 30%;
+            padding: 20px;
+            border: 1px solid grey;
+            border-radius: 15px;
+            background-color: white;
+            z-index: 1002;
+            overflow: auto;
+            box-shadow: 3px 3px 3px grey;
+            margin: 0 auto;
+            word-wrap: break-word;
+            word-break: break-all;
+        }
+        #showBandeja {
+            display: none;
+            position: absolute;
+            top: 20%;
+            left: 10%;
+            padding: 20px;
+            border: 1px solid grey;
+            border-radius: 15px;
+            background-color: white;
+            z-index: 1002;
+            overflow: auto;
+            box-shadow: 3px 3px 3px grey;
+            margin: 0 auto;
+            word-wrap: break-word;
+            word-break: break-all;
+        }
+        #close {
+            width: 200px;
+            position: relative;
+            left: 28%;
+        }
+    </style>
+</head>
+
+<body style="height:700px;font-family:verdana">
+    <div id="header">
+        <h1 style="padding:20px;">GESOC</h1>
+    </div>
+
+    <div id="navegation">
+        <div id="salir">
+            <h4 style="display:inline;">
+                <img src="images/menu_principal_-_administrador/salir.png" width="27" height="27">
+                <span onclick="window.location.href = '/salirMenu'">Salir</span>
+            </h4>
+        </div>
+
+        <div id="perfil">
+
+            <h4 style="display:inline;">
+                <img src="images/perfil/u42.svg" width="22" height="25">
+                <span onclick="document.getElementById('showPerfil').style.display='block';
+            document.getElementById('fade').style.display='block'">{{usuario.username}}</span>
+            </h4>
+        </div>
+
+        <div id="mensajes" username={{usuario.username}}>
+
+            <h4 style="display:inline;">
+                <img src="images/menu_principal_-_administrador/u23.svg" width="25" height="25">
+                <span onclick="document.getElementById('showBandeja').style.display='block';
+            document.getElementById('fade').style.display='block'">Mensajes</span>
+            </h4>
+        </div>
+
+        <div id="menuPrincipal">
+
+            <h4 style="display:inline;">
+                <img src="images/menu_principal_-_administrador/menu.png" width="25" height="25">
+                <span onclick="document.forms['menuPrincipal'].submit();">Menu</span>
+            </h4>
+            <form name="menuPrincipal" method="get" action="/menu">
+                <input type="hidden" name="username" value={{usuario.username}}>
+            </form>
+        </div>
+    </div>
+
+    
+    
+    
+    
+    <div id="content" style="height:70%">
+        <div id="plantilla">
+            <p>
+            <h4 id="headerPerfil">
+                <img class="tamanoImgPerfil" src="img/perfilUsuario.png" alt="Mi-Perfil"></h4>
+            </p>
+            <br>
+            <label><i class="elementoPerfil"></i>  Usuario:</label>
+                <input type="text" name="nombre" class="input-datos" placeholder="Nombre Usuario">
+            <br>
+            <label><i class="elementoPerfil"></i>  Clave:</label>
+                <input type="text" name="clave" class="input-datos" placeholder="Clave">
+            <br>
+            <label><i class="elementoPerfil"></i>  Organizacion:</label>
+                <input type="text" name="organizacion" class="input-datos" placeholder="Organizacion">
+            <br>
+            <label><i class="elementoPerfil"></i>  Rol:</label>
+                <input type="text" name="rol" class="input-datos" placeholder="Rol">
+            <br>
+            <br>
+        </div>
+    </div>
+
+    
+    
+    
+    
+    <div id="showBandeja">
+        <div id="contentBandeja"></div>
+        <button id="close" onclick="document.getElementById('showBandeja').style.display='none';
+            document.getElementById('fade').style.display='none'" style="position: relative;
+            left: 40%;">Cerrar</button>
+    </div>
+
+    <div id="showPerfil" style="height: 350px; width: 500px;">
+        <div id="contentPerfil" style="height:250px;">
+            <p>
+                <img src="images/perfil/u42.svg" width="40" height="45">
+            <h5 style="display:inline;">Usuario:</h5>{{usuario.username}}
+            </p>
+            <p>
+            <h5 style="display:inline;">Rol:</h5>{{rol}}
+            </p>
+            <p>
+            <h5 style="display:inline;">Organizacion:</h5>{{usuario.organizacion.nombre}}
+            </p>
+            <p>
+            <h5 style="display:inline;">Direccion:</h5>
+            {{usuario.organizacion.direccionPostal.calle}}
+            {{usuario.organizacion.direccionPostal.altura}},
+            {{usuario.organizacion.direccionPostal.ciudad.name}},
+            {{usuario.organizacion.direccionPostal.provincia.name}},
+            {{usuario.organizacion.direccionPostal.pais.name}}
+            </p>
+
+        </div>
+
+        <button id="close" onclick="document.getElementById('showPerfil').style.display='none';
+            document.getElementById('fade').style.display='none'">Cerrar</button>
+    </div>
+
+    <div id="fade" class="whiteOverlay"></div>
+
+    <div id="footer">Copyright@Grupo2</div>
+</body>
+
+</html>

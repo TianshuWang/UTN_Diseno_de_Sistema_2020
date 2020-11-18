@@ -121,7 +121,7 @@
                             <label for="mondea">Moneda</label>
                             <select class="custom-select" id="moneda_presupuesto" name="moneda" required>
                                 {{#each monedas}}
-                                <option name="moneda" value="{{this.id}}">{{this.id}}</option>
+                                <option name="moneda" value="{{this.id}}">{{this.description}}</option>
                                 {{/each}}
                             </select>
                         </div>
@@ -146,7 +146,9 @@
                         </div>
                         <div class="col-md-3 mb-3" id="numero-tarjeta">
                             <label for="numero_tarjeta">Numero Tarjeta</label>
-                            <input type="text" name="numero-tarjeta" class="form-control" id="numero_tarjeta" required>
+                            <input type="text" name="numero-tarjeta" class="form-control" id="numero_tarjeta" required 
+                            data-toggle="tooltip" data-placement="right"
+                                    title="Debe ser 20 digitos.">
                         </div>
                     </div>
                     <hr>

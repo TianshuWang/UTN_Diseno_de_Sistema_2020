@@ -287,7 +287,9 @@
                     <div class="form-group row justify-content-center">
                         <div class="col-sm-2">
                             <label for="cuit">CUIT</label id="nroIGJ">
-                            <input type="text" class="form-control" id="cuit" name="cuit" placeholder="CUIT" required>
+                            <input type="text" class="form-control" id="cuit" name="cuit" placeholder="CUIT" required 
+                            data-toggle="tooltip"
+                            data-placement="right" title="Debe que ser 11 digitos.">
                         </div>
 
                         <div class="col-sm-2">
@@ -386,7 +388,7 @@
                         </div>
 
                         <div class="col-sm-2">
-                            <label for="ciudad">Ciudad</label>
+                            <label for="ciudad">Ciudad/Barrio</label>
                             <select class="custom-select" id="ciudad" name="ciudad" required>
                                 <option>Seleccionar Ciudad</option>
                             </select>

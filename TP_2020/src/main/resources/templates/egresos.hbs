@@ -30,6 +30,7 @@
                 $(".sidenav").slideToggle("slow");
             });
         });       
+        $(function () { $("[data-toggle='tooltip']").tooltip(); });
     </script>
 </head>
 
@@ -408,9 +409,9 @@
                             <td>
                                 {{#if this.documento}}
                                 {{#is 'link' this.documento}}
-                                <button onclick="location.href='{{this.tipoDeDocumento.link}}'"
+                                <a href="{{this.tipoDeDocumento.link}}" target="_blank"
                                     class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="right"
-                                    title="{{this.tipoDeDocumento.link}}">Link</button>
+                                    title="{{this.tipoDeDocumento.link}}">Link</a>
                                 {{/is}}
                                 {{#is 'comprobante' this.documento}}
                                 <form id="descarga_form" method="get" action="/descarga/{{this.id}}">

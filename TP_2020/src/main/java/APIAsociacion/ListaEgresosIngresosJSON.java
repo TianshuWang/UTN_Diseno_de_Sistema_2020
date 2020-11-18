@@ -31,7 +31,7 @@ public class ListaEgresosIngresosJSON {
     public String jsonDatos(Usuario usuario) throws TransactionException {
         List<Egreso> egresos = repoEgreso.buscarTodos();
         List<Egreso> egresoList = egresos.stream().
-                filter(e->e.getUsuario().getOrganizacion().getId() == usuario.getOrganizacion().getId() && e.getIngresoAsociado() == null).
+                filter(e->e.getUsuario() !=null && e.getUsuario().getOrganizacion().getId() == usuario.getOrganizacion().getId() && e.getIngresoAsociado() == null).
                 collect(Collectors.toList());
         if(egresoList.isEmpty()) throw new TransactionException(BusinessError.ASOCIACION_EXCEPTION,"No Existen Egresos Para Asociar");
 

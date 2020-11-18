@@ -1,0 +1,104 @@
+{
+
+	"Ingresos":[
+	
+		{
+			"montoTotal": 100,
+			"fechaDeOperacion": "17-09-2020",
+			"id": 1
+		},
+		{
+			"montoTotal": 200,
+			"fechaDeOperacion": "15-09-2020",
+			"id": 2
+		},
+		{
+			"montoTotal": 50,
+			"fechaDeOperacion": "10-05-2020",
+			"id": 3
+		},
+		{
+			"montoTotal": 10,
+			"fechaDeOperacion": "19-09-2020",
+			"id": 4
+		},
+		{
+			"montoTotal": 300,
+			"fechaDeOperacion": "15-09-2020",
+			"id": 5
+		},
+		{
+			"montoTotal": 400,
+			"fechaDeOperacion": "10-08-2020",
+			"id": 6
+		},
+		{
+			"montoTotal": 60,
+			"fechaDeOperacion": "12-08-2020",
+			"id": 7
+		},
+		{
+			"montoTotal": 80,
+			"fechaDeOperacion": "17-07-2020",
+			"id": 8
+		},
+		{
+			"montoTotal": 70,
+			"fechaDeOperacion": "16-07-2020",
+			"id": 9
+		}
+	
+	],
+	
+	"Egresos":[
+	
+		{
+			"montoTotal": 100,
+			"fechaDeOperacion": "17-09-2020",
+			"id": 1
+		},
+		{
+			"montoTotal": 100,
+			"fechaDeOperacion": "20-08-2020",
+			"id": 2
+		},
+		{
+			"montoTotal": 100,
+			"fechaDeOperacion": "21-08-2020",
+			"id": 3
+		},
+		{
+			"montoTotal": 20,
+			"fechaDeOperacion": "10-08-2020",
+			"id": 4
+		},
+		{
+			"montoTotal": 30,
+			"fechaDeOperacion": "08-08-2020",
+			"id": 5
+		},
+		{
+			"montoTotal": 40,
+			"fechaDeOperacion": "20-07-2020",
+			"id": 6
+		},
+		{
+			"montoTotal": 40,
+			"fechaDeOperacion": "01-03-2020",
+			"id": 7
+		},
+		{
+			"montoTotal": 30,
+			"fechaDeOperacion": "04-06-2020",
+			"id": 8
+		},
+		{
+			"montoTotal": 30,
+			"fechaDeOperacion": "02-02-2020",
+			"id": 9
+		}
+	
+	]
+
+
+}

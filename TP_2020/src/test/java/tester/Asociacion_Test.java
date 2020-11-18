@@ -15,7 +15,7 @@ import java.util.Map;
 
 public class Asociacion_Test {
 
-    ServicioApiAsociacion servicioAsociacion = ServicioApiAsociacion.instancia();
+    /*ServicioApiAsociacion servicioAsociacion = ServicioApiAsociacion.instancia();
 
     @Test
     public void test_egreso_ingreso() throws IOException, TransactionException {
@@ -30,4 +30,5 @@ public class Asociacion_Test {
         Assert.assertEquals("13-10-2020", operacionResultado.getFechaDeOperacion());
         Assert.assertEquals(10.0, operacionResultado.getMontoTotal(),0.01);
     }
+    */
 }

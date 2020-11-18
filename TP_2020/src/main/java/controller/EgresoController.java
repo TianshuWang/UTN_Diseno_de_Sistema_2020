@@ -92,7 +92,7 @@ public class EgresoController {
         parametros.put("isAdm",usuario.getisAdm());
         parametros.put("categorias", categorias);
 
-        //new Scheduler().run(usuario.getOrganizacion());
+        new Scheduler().run(usuario.getOrganizacion());
 
         EntityManagerHelper.closeEntityManager();
         return new ModelAndView(parametros, "egresos.hbs");
